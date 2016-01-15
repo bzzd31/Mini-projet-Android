@@ -24,23 +24,19 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
 
     private LocationManager locationManager = null;
-    private TextView textViewGPS = null, textViewLatLong = null;
 
     private Uri imageUri;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
@@ -52,8 +48,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textViewGPS = (TextView) findViewById(R.id.textViewGPS);
-        textViewLatLong = (TextView) findViewById(R.id.textViewLatLong);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -64,12 +58,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
             buildAlertMessageNoGps();
-        } else {
-            textViewGPS.setText("GPS ON");
-            textViewLatLong.setText("Recherche en cours...");
         }
-
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -100,11 +89,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 if (resultCode == Activity.RESULT_OK) {
                     Uri selectedImage = imageUri;
                     getContentResolver().notifyChange(selectedImage, null);
-                    ImageView imageView = (ImageView) findViewById(R.id.imageView);
+
                     ContentResolver cr = getContentResolver();
                     try {
                         myBitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, selectedImage);
-                        imageView.setImageBitmap(myBitmap);
                         Toast.makeText(this, selectedImage.toString(), Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
                         Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
@@ -133,26 +121,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
     @Override
     public void onLocationChanged(Location location) {
-        String str = "Latitude: "+location.getLatitude()+"\nLongitude: "+location.getLongitude();
-        textViewLatLong.setText(str);
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        textViewGPS.setText("GPS OFF");
-        textViewLatLong.setText("En attente du GPS");
         //buildAlertMessageNoGps();
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-        textViewGPS.setText("GPS ON");
-        textViewLatLong.setText("Recherche en cours...");
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-        // TODO Auto-generated method stub
     }
 
 
