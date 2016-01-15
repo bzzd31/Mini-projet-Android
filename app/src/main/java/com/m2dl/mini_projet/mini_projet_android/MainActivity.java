@@ -28,10 +28,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ImageView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.io.File;
 
-
-public class MainActivity extends AppCompatActivity implements LocationListener {
+public class MainActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
 
     private LocationManager locationManager = null;
     private TextView textViewGPS = null, textViewLatLong = null;
@@ -39,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private Uri imageUri;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private Bitmap myBitmap;
+
+    private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +78,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 takePhoto(view);
             }
         });
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
     public void takePhoto(View view) {
@@ -164,5 +176,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Paul Sab and move the camera
+        LatLng paulSab = new LatLng(43.560653, 1.467676);
+        //mMap.addMarker(new MarkerOptions().position(paulSab).title("Marker in Paul Sab"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(paulSab, 15));
+        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
     }
 }
