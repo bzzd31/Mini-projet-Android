@@ -8,25 +8,37 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ImageView;
 
-import org.w3c.dom.Text;
+import java.io.File;
+
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
     private LocationManager locationManager = null;
     private TextView textViewGPS = null, textViewLatLong = null;
+
+    private Uri imageUri;
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private Bitmap myBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +67,39 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                takePhoto(view);
             }
         });
+    }
+
+    public void takePhoto(View view) {
+        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        File photo = new File(Environment.getExternalStorageDirectory(), "Pic.jpg");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+        imageUri = Uri.fromFile(photo);
+        startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri selectedImage = imageUri;
+                    getContentResolver().notifyChange(selectedImage, null);
+                    ImageView imageView = (ImageView) findViewById(R.id.imageView);
+                    ContentResolver cr = getContentResolver();
+                    try {
+                        myBitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, selectedImage);
+                        imageView.setImageBitmap(myBitmap);
+                        Toast.makeText(this, selectedImage.toString(), Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
+                        Log.e("Camera", e.toString());
+                    }
+                }
+        }
     }
 
     private void buildAlertMessageNoGps() {
@@ -100,8 +141,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // TODO Auto-generated method stub
-
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
