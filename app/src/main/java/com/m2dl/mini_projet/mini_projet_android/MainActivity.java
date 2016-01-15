@@ -4,7 +4,9 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -48,8 +50,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if(screenIsLarge()) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -177,5 +187,22 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         //mMap.addMarker(new MarkerOptions().position(paulSab).title("Marker in Paul Sab"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(paulSab, 15));
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+    }
+
+    private boolean screenIsLarge()
+    {
+        int screenMask = getResources().getConfiguration().screenLayout;
+        if ( ( screenMask & Configuration.SCREENLAYOUT_SIZE_MASK) ==
+                Configuration.SCREENLAYOUT_SIZE_LARGE) {
+            return true;
+        }
+
+        if ( (screenMask & Configuration.SCREENLAYOUT_SIZE_MASK) ==
+                Configuration.SCREENLAYOUT_SIZE_XLARGE) {
+            return true;
+        }
+
+        return false;
+
     }
 }
