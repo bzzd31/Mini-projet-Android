@@ -12,8 +12,21 @@
     tools:context="com.m2dl.mini_projet.mini_projet_android.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GPS off"
+            android:id="@+id/textViewGPS" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="En attente du GPS"
+            android:id="@+id/textViewLatLong" />
+    </LinearLayout>
 </RelativeLayout>
