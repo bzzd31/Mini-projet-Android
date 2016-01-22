@@ -37,11 +37,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.m2dl.mini_projet.mini_projet_android.data.pointInteret.PointInteretManager;
+import com.m2dl.mini_projet.mini_projet_android.data.pointInteret.PointInteretType;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 
-public class    MainActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
 
     private LocationManager locationManager = null;
 
@@ -57,6 +63,8 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
     private FragmentManager fm;
 
     private double coordLat, coordLong;
+
+    private PointInteretManager pointInteretManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +102,8 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        pointInteretManager = new PointInteretManager();
     }
 
     public void takePhoto(View view) {
@@ -258,9 +268,17 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
 
         // Add a marker in Paul Sab and move the camera
         LatLng paulSab = new LatLng(43.560653, 1.467676);
-        //mMap.addMarker(new MarkerOptions().position(paulSab).title("Marker in Paul Sab"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(paulSab, 15));
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
+        Map<PointInteretType, List<MarkerOptions>> mapPointInteret = pointInteretManager.getMapPointInteret();
+        for (PointInteretType type : mapPointInteret.keySet()) {
+            List<MarkerOptions> listMarker = mapPointInteret.get(type);
+
+            for (MarkerOptions marker : listMarker) {
+                mMap.addMarker(marker);
+            }
+        }
     }
 
     private boolean screenIsLarge()
