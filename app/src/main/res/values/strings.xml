@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">UPS-Caring</string>
     <string name="title_activity_maps">Map</string>
+    <string-array name="pointsInteret_array">
+        <item>Carton</item>
+        <item>Papier</item>
+        <item>Piles</item>
+        <item>Texitles</item>
+        <item>Verre</item>
+    </string-array>
 </resources>

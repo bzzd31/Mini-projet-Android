@@ -1,6 +1,9 @@
 package com.m2dl.mini_projet.mini_projet_android;
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.support.v4.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,13 +22,13 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -44,7 +47,13 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private Bitmap myBitmap;
 
+    SupportMapFragment mapFragment;
+
     private GoogleMap mMap;
+
+    private FragmentManager fm;
+
+    private double coordX, coordY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +69,7 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 5, this);
 
         if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
             buildAlertMessageNoGps();
@@ -74,7 +83,10 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
             }
         });
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        fm = getFragmentManager();
+
+
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
@@ -100,6 +112,28 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
                     try {
                         myBitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, selectedImage);
                         Toast.makeText(this, selectedImage.toString(), Toast.LENGTH_LONG).show();
+
+                        final ProgressDialog progDailog = ProgressDialog.show(MainActivity.this, "Geolocalisation en cours..",
+                                "Veuillez patienter", true);
+                        new Thread() {
+                            public void run() {
+                                try {
+                                    while (coordX == 0.0 && coordY == 0.0);
+                                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                                    Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+                                    if (prev != null) {
+                                        ft.remove(prev);
+                                    }
+                                    ft.addToBackStack(null);
+                                    DialogFragment newFragment = PhotoDialogFragment.newInstance(myBitmap, coordX, coordY);
+                                    newFragment.show(ft, "dialog");
+                                } catch (Exception e) {
+                                }
+                                progDailog.dismiss();
+                            }
+                        }.start();
+
+
                     } catch (Exception e) {
                         Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
                         Log.e("Camera", e.toString());
@@ -108,6 +142,13 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
         }
     }
 
+    public double getCoordX() {
+        return coordX;
+    }
+
+    public double getCoordY() {
+        return coordY;
+    }
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Votre GPS semble désactivé, voulez-vous l'activer ? (Le GPS est essentiel pour le bon fonctionnement de l'application)")
@@ -127,11 +168,15 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
     }
     @Override
     public void onLocationChanged(Location location) {
+        coordX = location.getLatitude();
+        coordY = location.getLongitude();
     }
 
     @Override
     public void onProviderDisabled(String provider) {
         //buildAlertMessageNoGps();
+        coordX = 0.0;
+        coordY = 0.0;
     }
 
     @Override
