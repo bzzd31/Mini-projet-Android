@@ -10,21 +10,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class PointInteretManager {
 
-    private List<Tag> pointInterets;
-    private Map<PointInteret, List<Object>> mapPointInteret;
+    private Map<Tag, List<Object>> mapPointInteret;
 
     public PointInteretManager() {
         init();
     }
 
-    public List<Tag> getPointInterets() {
-        return pointInterets;
+    public Set<Tag> getPointInterets() {
+        return mapPointInteret.keySet();
     }
 
-    public Map<PointInteret, List<Object>> getMapPointInteret() {
+    public Map<Tag, List<Object>> getMapPointInteret() {
         return mapPointInteret;
     }
 
@@ -48,12 +48,10 @@ public class PointInteretManager {
     }
 
     private void init() {
-        pointInterets = new ArrayList<>();
         mapPointInteret = new HashMap<>();
 
         // Carton
         PointInteret pointInteretCarton = new PointInteret("Carton", 0xFFFFAA00);
-        pointInterets.add(pointInteretCarton);
         mapPointInteret.put(pointInteretCarton, new ArrayList<>());
 
         addPoint(pointInteretCarton, new LatLng(43.55773,1.46920),
@@ -83,7 +81,6 @@ public class PointInteretManager {
 
         // Piles
         PointInteret pointInteretPiles = new PointInteret("Piles", 0xFF9B00FF);
-        pointInterets.add(pointInteretPiles);
         mapPointInteret.put(pointInteretPiles, new ArrayList<>());
 
         addPoint(pointInteretPiles, new LatLng(43.56362,1.46487),
@@ -98,7 +95,6 @@ public class PointInteretManager {
 
         // Textiles
         PointInteret pointInteretTextiles = new PointInteret("Textiles", 0xFFFF0092);
-        pointInterets.add(pointInteretTextiles);
         mapPointInteret.put(pointInteretTextiles, new ArrayList<>());
 
         addPoint(pointInteretTextiles, new LatLng(43.55505,1.46811));
@@ -106,7 +102,6 @@ public class PointInteretManager {
 
         // Papier
         PointInteret pointInterePapier = new PointInteret("Papier", 0xFF00CFFF);
-        pointInterets.add(pointInterePapier);
         mapPointInteret.put(pointInterePapier, new ArrayList<>());
 
         addPoint(pointInterePapier, new LatLng(43.56758,1.46950),
@@ -208,7 +203,6 @@ public class PointInteretManager {
 
         // Verre
         PointInteret pointIntereVerre = new PointInteret("Verre", 0xFF6DEA00);
-        pointInterets.add(pointIntereVerre);
         mapPointInteret.put(pointIntereVerre, new ArrayList<>());
 
         addPoint(pointIntereVerre, new LatLng(43.55891,1.47303));

@@ -1,9 +1,6 @@
 package com.m2dl.mini_projet.mini_projet_android.data.tag;
 
-/**
- * Created by Lucas-PCP on 23/01/2016.
- */
-public class Tag {
+public class Tag implements Comparable {
     private String nom;
 
     public Tag(String nom) {
@@ -37,5 +34,15 @@ public class Tag {
     @Override
     public int hashCode() {
         return nom != null ? nom.hashCode() : 0;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (this == o) return 0;
+        if (o == null || getClass() != o.getClass()) return -1;
+
+        Tag tag = (Tag) o;
+
+        return nom.compareTo(tag.nom);
     }
 }

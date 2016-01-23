@@ -40,12 +40,13 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.m2dl.mini_projet.mini_projet_android.data.pointInteret.PointInteretManager;
-import com.m2dl.mini_projet.mini_projet_android.data.tag.PointInteret;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
 
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private double coordLat, coordLong;
 
     private PointInteretManager pointInteretManager;
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +108,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mapFragment.getMapAsync(this);
 
         pointInteretManager = new PointInteretManager();
-        tags = pointInteretManager.getPointInterets();
+
+        // Init tag list
+        tags = new TreeSet<>();
+        tags.addAll(pointInteretManager.getPointInterets());
     }
 
     public void takePhoto(View view) {
@@ -275,8 +279,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(paulSab, 15));
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
-        Map<PointInteret, List<Object>> mapPointInteret = pointInteretManager.getMapPointInteret();
-        for (PointInteret pointInteret : mapPointInteret.keySet()) {
+        // Add default interest point as polygon/circle to the map
+        Map<Tag, List<Object>> mapPointInteret = pointInteretManager.getMapPointInteret();
+        for (Tag pointInteret : mapPointInteret.keySet()) {
             List<Object> listOptions = mapPointInteret.get(pointInteret);
 
             for (Object options : listOptions) {
