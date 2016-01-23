@@ -11,11 +11,17 @@ public class Photo {
     private double coordLong;
     private String author;
     private List<Tag> tags;
+    private String url;
 
     public Photo(String author, double coordLat, double coordLong) {
+        this(author, coordLat, coordLong, null);
+    }
+
+    public Photo(String author, double coordLat, double coordLong, String url) {
         this.author = author;
         this.coordLat = coordLat;
         this.coordLong = coordLong;
+        this.url = url;
         this.tags = new ArrayList<>();
     }
 
