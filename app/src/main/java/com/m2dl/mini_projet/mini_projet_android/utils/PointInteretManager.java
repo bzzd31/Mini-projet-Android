@@ -1,4 +1,4 @@
-package com.m2dl.mini_projet.mini_projet_android.data.pointInteret;
+package com.m2dl.mini_projet.mini_projet_android.utils;
 
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
