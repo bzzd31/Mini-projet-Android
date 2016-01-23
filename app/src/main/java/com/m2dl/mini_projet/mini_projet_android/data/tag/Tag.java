@@ -22,4 +22,20 @@ public class Tag {
     public String toString() {
         return nom;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Tag tag = (Tag) o;
+
+        return nom != null ? nom.equals(tag.nom) : tag.nom == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return nom != null ? nom.hashCode() : 0;
+    }
 }
