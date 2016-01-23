@@ -1,8 +1,13 @@
 package com.m2dl.mini_projet.mini_projet_android.utils;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.support.v4.content.ContextCompat;
+
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.m2dl.mini_projet.mini_projet_android.R;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.PointInteret;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 
@@ -14,9 +19,11 @@ import java.util.Set;
 
 public class PointInteretManager {
 
+    private Context context;
     private Map<Tag, List<Object>> mapPointInteret;
 
-    public PointInteretManager() {
+    public PointInteretManager(Context context) {
+        this.context = context;
         init();
     }
 
@@ -51,7 +58,8 @@ public class PointInteretManager {
         mapPointInteret = new HashMap<>();
 
         // Carton
-        PointInteret pointInteretCarton = new PointInteret("Carton", 0xFFFFAA00);
+        PointInteret pointInteretCarton = new PointInteret("Carton",
+                ContextCompat.getColor(context, R.color.carton));
         mapPointInteret.put(pointInteretCarton, new ArrayList<>());
 
         addPoint(pointInteretCarton, new LatLng(43.55773,1.46920),
@@ -80,7 +88,8 @@ public class PointInteretManager {
                 new LatLng(43.5665,1.46965));
 
         // Piles
-        PointInteret pointInteretPiles = new PointInteret("Piles", 0xFF9B00FF);
+        PointInteret pointInteretPiles = new PointInteret("Piles",
+                ContextCompat.getColor(context, R.color.piles));
         mapPointInteret.put(pointInteretPiles, new ArrayList<>());
 
         addPoint(pointInteretPiles, new LatLng(43.56362,1.46487),
@@ -94,14 +103,16 @@ public class PointInteretManager {
                 new LatLng(43.56446,1.46602));
 
         // Textiles
-        PointInteret pointInteretTextiles = new PointInteret("Textiles", 0xFFFF0092);
+        PointInteret pointInteretTextiles = new PointInteret("Textiles",
+                ContextCompat.getColor(context, R.color.textiles));
         mapPointInteret.put(pointInteretTextiles, new ArrayList<>());
 
         addPoint(pointInteretTextiles, new LatLng(43.55505,1.46811));
         addPoint(pointInteretTextiles, new LatLng(43.56305,1.45935));
 
         // Papier
-        PointInteret pointInterePapier = new PointInteret("Papier", 0xFF00CFFF);
+        PointInteret pointInterePapier = new PointInteret("Papier",
+                ContextCompat.getColor(context, R.color.papier));
         mapPointInteret.put(pointInterePapier, new ArrayList<>());
 
         addPoint(pointInterePapier, new LatLng(43.56758,1.46950),
@@ -202,7 +213,8 @@ public class PointInteretManager {
                 new LatLng(43.5579,1.46945));
 
         // Verre
-        PointInteret pointIntereVerre = new PointInteret("Verre", 0xFF6DEA00);
+        PointInteret pointIntereVerre = new PointInteret("Verre",
+                ContextCompat.getColor(context, R.color.verre));
         mapPointInteret.put(pointIntereVerre, new ArrayList<>());
 
         addPoint(pointIntereVerre, new LatLng(43.55891,1.47303));

@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="carton">#FFFFAA00</color>
+    <color name="papier">#FF00CFFF</color>
+    <color name="piles">#FF9B00FF</color>
+    <color name="textiles">#FFFF0092</color>
+    <color name="verre">#FF6DEA00</color>
 </resources>

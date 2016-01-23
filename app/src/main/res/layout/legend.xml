@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/legend"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="left|bottom"
+    android:layout_marginBottom="25dp"
+    android:layout_marginLeft="5dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Carton"
+        android:id="@+id/legend_carton"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:drawableLeft="@drawable/rectangle_carton"
+        android:drawablePadding="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Papier"
+        android:id="@+id/legend_papier"
+        android:layout_below="@+id/legend_carton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:drawableLeft="@drawable/rectangle_papier"
+        android:drawablePadding="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Piles"
+        android:id="@+id/legend_piles"
+        android:layout_below="@+id/legend_papier"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:drawableLeft="@drawable/rectangle_piles"
+        android:drawablePadding="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Textiles"
+        android:id="@+id/legend_textiles"
+        android:layout_below="@+id/legend_piles"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:drawableLeft="@drawable/oval_textiles"
+        android:drawablePadding="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Verre"
+        android:id="@+id/legend_verre"
+        android:layout_below="@+id/legend_textiles"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:drawableLeft="@drawable/oval_verre"
+        android:drawablePadding="5dp" />
+</RelativeLayout>

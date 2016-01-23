@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        pointInteretManager = new PointInteretManager();
+        pointInteretManager = new PointInteretManager(this);
 
         // Init tag list
         tags = new TreeSet<>();

@@ -14,7 +14,10 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.m2dl.mini_projet.mini_projet_android.MainActivity" />
+        tools:context="com.m2dl.mini_projet.mini_projet_android.MainActivity">
+
+        <include layout="@layout/legend"/>
+    </fragment>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
