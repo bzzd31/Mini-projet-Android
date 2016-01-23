@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.m2dl.mini_projet.mini_projet_android.InterfacePhoto;
+import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
 import com.m2dl.mini_projet.mini_projet_android.R;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 
@@ -84,7 +84,7 @@ public class PhotoDialogFragment extends DialogFragment {
                 }
 
                 if(tagsConfirmed && authorConfirmed) {
-                    InterfacePhoto myPhoto = new InterfacePhoto(etPseudo.getText().toString(), coordLat, coordLong);
+                    Photo myPhoto = new Photo(etPseudo.getText().toString(), coordLat, coordLong);
                     String[] myTags = etTags.getText().toString().split(",");
                     for (String tag: myTags) {
                         Tag myTag = new Tag(tag.replaceAll("\\s", ""));

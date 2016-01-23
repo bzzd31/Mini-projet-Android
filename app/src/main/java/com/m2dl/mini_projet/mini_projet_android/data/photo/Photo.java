@@ -1,24 +1,22 @@
-package com.m2dl.mini_projet.mini_projet_android;
+package com.m2dl.mini_projet.mini_projet_android.data.photo;
 
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Created by Lucas-PCP on 23/01/2016.
- */
-public class InterfacePhoto {
+public class Photo {
 
     private double coordLat;
     private double coordLong;
     private String author;
-    private ArrayList<Tag> tags;
+    private List<Tag> tags;
 
-    public InterfacePhoto(String author, double coordLat, double coordLong) {
+    public Photo(String author, double coordLat, double coordLong) {
         this.author = author;
         this.coordLat = coordLat;
         this.coordLong = coordLong;
-        this.tags = new ArrayList<Tag>();
+        this.tags = new ArrayList<>();
     }
 
     public void putTag(Tag tag) {
