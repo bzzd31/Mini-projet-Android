@@ -44,8 +44,8 @@ public class PhotoDialogFragment extends DialogFragment {
             ImageView bitmapDialog = (ImageView)v.findViewById(R.id.imageView);
             bitmapDialog.setImageBitmap(myBitmap);
 
-            double coordLat = getArguments().getDouble("coordLat");
-            double coordLong = getArguments().getDouble("coordLong");
+            coordLat = getArguments().getDouble("coordLat");
+            coordLong = getArguments().getDouble("coordLong");
             TextView coord = (TextView)v.findViewById(R.id.textViewCoord);
             coord.setText("Latitude: " + coordLat + "  Longitude: " + coordLong);
         }
@@ -65,19 +65,31 @@ public class PhotoDialogFragment extends DialogFragment {
         Button buttonConfirmer = (Button)v.findViewById(R.id.buttonConfirmer);
         buttonConfirmer.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                Boolean authorConfirmed = false, tagsConfirmed = false;
                 if (!etPseudo.getText().toString().isEmpty()) {
-                    Log.i("Pseudo", etPseudo.getText().toString());
+                    authorConfirmed = true;
                 } else {
+                    authorConfirmed = false;
                     etPseudo.setError("Ce champs est obligatoire");
                 }
                 if (!etTags.getText().toString().isEmpty()) {
-                    Log.i("Tags", etTags.getText().toString());
+                    tagsConfirmed = true;
                 }
                 else {
+                    tagsConfirmed = false;
                     etTags.setError("Veuillez rentrer au moins un tag");
                 }
 
-                //getDialog().dismiss();
+                if(tagsConfirmed && authorConfirmed) {
+                    InterfacePhoto myPhoto = new InterfacePhoto(etPseudo.getText().toString(), coordLat, coordLong);
+                    String[] myTags = etTags.getText().toString().split(",");
+                    for (String tag: myTags) {
+                        Tag myTag = new Tag(tag.replaceAll("\\s", ""));
+                        myPhoto.putTag(myTag);
+                    }
+                    getDialog().dismiss();
+                    Log.i("MYPHOTO", myPhoto.toString());
+                }
             }
         });
         return v;
