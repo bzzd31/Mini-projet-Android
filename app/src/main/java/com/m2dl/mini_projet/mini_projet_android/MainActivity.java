@@ -37,17 +37,21 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.m2dl.mini_projet.mini_projet_android.data.pointInteret.PointInteretManager;
-import com.m2dl.mini_projet.mini_projet_android.data.pointInteret.PointInteretType;
+import com.m2dl.mini_projet.mini_projet_android.data.tag.PointInteret;
+import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
+
+    public static final String TAG = "UPS-Caring";
 
     private LocationManager locationManager = null;
 
@@ -65,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private double coordLat, coordLong;
 
     private PointInteretManager pointInteretManager;
+    private List<Tag> tags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mapFragment.getMapAsync(this);
 
         pointInteretManager = new PointInteretManager();
+        tags = pointInteretManager.getPointInterets();
     }
 
     public void takePhoto(View view) {
@@ -271,12 +277,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(paulSab, 15));
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
-        Map<PointInteretType, List<MarkerOptions>> mapPointInteret = pointInteretManager.getMapPointInteret();
-        for (PointInteretType type : mapPointInteret.keySet()) {
-            List<MarkerOptions> listMarker = mapPointInteret.get(type);
+        Map<PointInteret, List<Object>> mapPointInteret = pointInteretManager.getMapPointInteret();
+        for (PointInteret pointInteret : mapPointInteret.keySet()) {
+            List<Object> listOptions = mapPointInteret.get(pointInteret);
 
-            for (MarkerOptions marker : listMarker) {
-                mMap.addMarker(marker);
+            for (Object options : listOptions) {
+                if (options instanceof PolygonOptions) {
+                    mMap.addPolygon((PolygonOptions) options);
+                } else if (options instanceof CircleOptions) {
+                    mMap.addCircle((CircleOptions) options);
+                }
             }
         }
     }
