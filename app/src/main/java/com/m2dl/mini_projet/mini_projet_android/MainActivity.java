@@ -2,6 +2,9 @@ package com.m2dl.mini_projet.mini_projet_android;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.support.v4.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -28,7 +31,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -46,6 +48,7 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
     private Uri imageUri;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private Bitmap myBitmap;
+    private Boolean isGPSOn = false;
 
     SupportMapFragment mapFragment;
 
@@ -53,7 +56,7 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
 
     private FragmentManager fm;
 
-    private double coordX, coordY;
+    private double coordLat, coordLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,8 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
 
         if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
             buildAlertMessageNoGps();
+        } else {
+            isGPSOn = true;
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -111,29 +116,45 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
                     ContentResolver cr = getContentResolver();
                     try {
                         myBitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, selectedImage);
-                        Toast.makeText(this, selectedImage.toString(), Toast.LENGTH_LONG).show();
-
-                        final ProgressDialog progDailog = ProgressDialog.show(MainActivity.this, "Geolocalisation en cours..",
-                                "Veuillez patienter", true);
-                        new Thread() {
-                            public void run() {
-                                try {
-                                    while (coordX == 0.0 && coordY == 0.0);
-                                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                                    Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
-                                    if (prev != null) {
-                                        ft.remove(prev);
+                        myBitmap = resize(myBitmap);
+                        File imageFile = new File(imageUri.toString());
+                        ExifInterface exif = new ExifInterface(imageFile.getCanonicalPath().replace("/file:", ""));
+                        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                        switch(orientation) {
+                            case ExifInterface.ORIENTATION_ROTATE_90:
+                                myBitmap = rotateImage(myBitmap, 90);
+                                break;
+                            case ExifInterface.ORIENTATION_ROTATE_180:
+                                myBitmap = rotateImage(myBitmap, 180);
+                                break;
+                        }
+                        String dialogTitle;
+                        String dialogMessage;
+                        if (!isGPSOn) {
+                            dialogTitle = "Géolocalisation GPS...";
+                            dialogMessage = "Veuillez activer votre GPS puis patienter pendant la géolocalisation";
+                        } else {
+                            dialogTitle = "Géolocalisation GPS...";
+                            dialogMessage = "Veuillez patienter pendant la géolocalisation";
+                        }
+                        final ProgressDialog progDialog = ProgressDialog.show(MainActivity.this, dialogTitle, dialogMessage, true);
+                            new Thread() {
+                                public void run() {
+                                    try {
+                                        while (coordLat == 0.0 && coordLong == 0.0);
+                                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                                        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+                                        if (prev != null) {
+                                            ft.remove(prev);
+                                        }
+                                        ft.addToBackStack(null);
+                                        DialogFragment newFragment = PhotoDialogFragment.newInstance(myBitmap, coordLat, coordLong);
+                                        newFragment.show(ft, "dialog");
+                                    } catch (Exception e) {
                                     }
-                                    ft.addToBackStack(null);
-                                    DialogFragment newFragment = PhotoDialogFragment.newInstance(myBitmap, coordX, coordY);
-                                    newFragment.show(ft, "dialog");
-                                } catch (Exception e) {
+                                    progDialog.dismiss();
                                 }
-                                progDailog.dismiss();
-                            }
                         }.start();
-
-
                     } catch (Exception e) {
                         Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
                         Log.e("Camera", e.toString());
@@ -142,13 +163,46 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
         }
     }
 
-    public double getCoordX() {
-        return coordX;
+    private Bitmap rotateImage(Bitmap source, float angle) {
+        Bitmap retVal;
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        retVal = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+
+        return retVal;
     }
 
-    public double getCoordY() {
-        return coordY;
+    private Bitmap resize(Bitmap bMap) {
+        if ((float)bMap.getHeight() /(float)bMap.getWidth() == .5625 ||
+                (float)bMap.getWidth() / (float)bMap.getHeight() == .5625) { //16/9
+            if (bMap.getHeight() < bMap.getWidth()) {
+                //bMap = Bitmap.createScaledBitmap(bMap, 1024, 576, false);
+                bMap = Bitmap.createScaledBitmap(bMap, 1280, 720, false); //720p
+            } else {
+                //bMap = Bitmap.createScaledBitmap(bMap, 576, 1024, false);
+                bMap = Bitmap.createScaledBitmap(bMap, 720, 1280, false); //720p
+            }
+        } else if ((float)bMap.getHeight() / (float)bMap.getWidth() == .625 ||
+                (float)bMap.getWidth() / (float)bMap.getHeight() == .625) { //16/10
+            if (bMap.getHeight() < bMap.getWidth()) {
+                //bMap = Bitmap.createScaledBitmap(bMap, 960, 600, false);
+                bMap = Bitmap.createScaledBitmap(bMap, 1152, 720, false); //720p
+            } else {
+                //bMap = Bitmap.createScaledBitmap(bMap, 600, 960, false);
+                bMap = Bitmap.createScaledBitmap(bMap, 720, 1152, false); //720p
+            }
+        } else if ((float)bMap.getHeight() / (float)bMap.getWidth() == .75 ||
+                (float)bMap.getWidth() / (float)bMap.getHeight() == .75) { //4/3
+            if (bMap.getHeight() < bMap.getWidth()) {
+                bMap = Bitmap.createScaledBitmap(bMap, 960, 720, false);
+            } else {
+                bMap = Bitmap.createScaledBitmap(bMap, 720, 960, false);
+            }
+        }
+        return bMap;
     }
+
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Votre GPS semble désactivé, voulez-vous l'activer ? (Le GPS est essentiel pour le bon fonctionnement de l'application)")
@@ -168,19 +222,21 @@ public class    MainActivity extends AppCompatActivity implements LocationListen
     }
     @Override
     public void onLocationChanged(Location location) {
-        coordX = location.getLatitude();
-        coordY = location.getLongitude();
+        coordLat = location.getLatitude();
+        coordLong = location.getLongitude();
     }
 
     @Override
     public void onProviderDisabled(String provider) {
         //buildAlertMessageNoGps();
-        coordX = 0.0;
-        coordY = 0.0;
+        coordLat = 0.0;
+        coordLong = 0.0;
+        isGPSOn = false;
     }
 
     @Override
     public void onProviderEnabled(String provider) {
+        isGPSOn = true;
     }
 
     @Override
