@@ -1,5 +1,7 @@
 package com.m2dl.mini_projet.mini_projet_android;
 
+import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
+
 import java.util.ArrayList;
 
 /**

@@ -2,7 +2,6 @@ package com.m2dl.mini_projet.mini_projet_android;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.support.v4.app.Fragment;
@@ -45,7 +44,6 @@ import com.m2dl.mini_projet.mini_projet_android.data.tag.PointInteret;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
