@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface IPhotoProvider {
 
-    List<Photo> getPhotos();
+    List<Photo> getPhotos(); //donner un URL à chaque photo renvoyé du serveur
 
     Photo post(Bitmap photo, String author, Date date, double coordLat, double coordLong, List<Tag> tags);
 }

@@ -17,6 +17,7 @@ import com.m2dl.mini_projet.mini_projet_android.R;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class PhotoDialogFragment extends DialogFragment {
@@ -68,6 +69,8 @@ public class PhotoDialogFragment extends DialogFragment {
         Button buttonConfirmer = (Button)v.findViewById(R.id.buttonConfirmer);
         buttonConfirmer.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                Date currentDate = new Date(System.currentTimeMillis());
+                Log.i("DATE", currentDate+"");
                 Boolean authorConfirmed = false, tagsConfirmed = false;
                 if (!etPseudo.getText().toString().isEmpty()) {
                     authorConfirmed = true;
@@ -84,7 +87,7 @@ public class PhotoDialogFragment extends DialogFragment {
                 }
 
                 if(tagsConfirmed && authorConfirmed) {
-                    Photo myPhoto = new Photo(etPseudo.getText().toString(), coordLat, coordLong);
+                    Photo myPhoto = new Photo(etPseudo.getText().toString(), coordLat, coordLong, currentDate);
                     String[] myTags = etTags.getText().toString().split(",");
                     for (String tag: myTags) {
                         Tag myTag = new Tag(tag.replaceAll("\\s", ""));

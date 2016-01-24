@@ -44,6 +44,8 @@ import com.m2dl.mini_projet.mini_projet_android.utils.PointInteretManager;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(screenIsLarge()) {
+        if (screenIsLarge()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -87,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 5, this);
 
-        if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps();
         } else {
             isGPSOn = true;
@@ -107,8 +109,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
         pointInteretManager = new PointInteretManager(this);
+
 
         // Init tag list
         tags = new TreeSet<>();
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         File imageFile = new File(imageUri.toString());
                         ExifInterface exif = new ExifInterface(imageFile.getCanonicalPath().replace("/file:", ""));
                         int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                        switch(orientation) {
+                        switch (orientation) {
                             case ExifInterface.ORIENTATION_ROTATE_90:
                                 myBitmap = rotateImage(myBitmap, 90);
                                 break;
@@ -157,22 +159,22 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             dialogMessage = "Veuillez patienter pendant la géolocalisation";
                         }
                         final ProgressDialog progDialog = ProgressDialog.show(MainActivity.this, dialogTitle, dialogMessage, true);
-                            new Thread() {
-                                public void run() {
-                                    try {
-                                        while (coordLat == 0.0 && coordLong == 0.0);
-                                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                                        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
-                                        if (prev != null) {
-                                            ft.remove(prev);
-                                        }
-                                        ft.addToBackStack(null);
-                                        DialogFragment newFragment = PhotoDialogFragment.newInstance(myBitmap, coordLat, coordLong);
-                                        newFragment.show(ft, "dialog");
-                                    } catch (Exception e) {
+                        new Thread() {
+                            public void run() {
+                                try {
+                                    while (coordLat == 0.0 && coordLong == 0.0) ;
+                                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                                    Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+                                    if (prev != null) {
+                                        ft.remove(prev);
                                     }
-                                    progDialog.dismiss();
+                                    ft.addToBackStack(null);
+                                    DialogFragment newFragment = PhotoDialogFragment.newInstance(myBitmap, coordLat, coordLong);
+                                    newFragment.show(ft, "dialog");
+                                } catch (Exception e) {
                                 }
+                                progDialog.dismiss();
+                            }
                         }.start();
                     } catch (Exception e) {
                         Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
@@ -193,8 +195,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     private Bitmap resize(Bitmap bMap) {
-        if ((float)bMap.getHeight() /(float)bMap.getWidth() == .5625 ||
-                (float)bMap.getWidth() / (float)bMap.getHeight() == .5625) { //16/9
+        if ((float) bMap.getHeight() / (float) bMap.getWidth() == .5625 ||
+                (float) bMap.getWidth() / (float) bMap.getHeight() == .5625) { //16/9
             if (bMap.getHeight() < bMap.getWidth()) {
                 //bMap = Bitmap.createScaledBitmap(bMap, 1024, 576, false);
                 bMap = Bitmap.createScaledBitmap(bMap, 1280, 720, false); //720p
@@ -202,8 +204,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 //bMap = Bitmap.createScaledBitmap(bMap, 576, 1024, false);
                 bMap = Bitmap.createScaledBitmap(bMap, 720, 1280, false); //720p
             }
-        } else if ((float)bMap.getHeight() / (float)bMap.getWidth() == .625 ||
-                (float)bMap.getWidth() / (float)bMap.getHeight() == .625) { //16/10
+        } else if ((float) bMap.getHeight() / (float) bMap.getWidth() == .625 ||
+                (float) bMap.getWidth() / (float) bMap.getHeight() == .625) { //16/10
             if (bMap.getHeight() < bMap.getWidth()) {
                 //bMap = Bitmap.createScaledBitmap(bMap, 960, 600, false);
                 bMap = Bitmap.createScaledBitmap(bMap, 1152, 720, false); //720p
@@ -211,8 +213,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 //bMap = Bitmap.createScaledBitmap(bMap, 600, 960, false);
                 bMap = Bitmap.createScaledBitmap(bMap, 720, 1152, false); //720p
             }
-        } else if ((float)bMap.getHeight() / (float)bMap.getWidth() == .75 ||
-                (float)bMap.getWidth() / (float)bMap.getHeight() == .75) { //4/3
+        } else if ((float) bMap.getHeight() / (float) bMap.getWidth() == .75 ||
+                (float) bMap.getWidth() / (float) bMap.getHeight() == .75) { //4/3
             if (bMap.getHeight() < bMap.getWidth()) {
                 bMap = Bitmap.createScaledBitmap(bMap, 960, 720, false);
             } else {
@@ -239,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         final AlertDialog alert = builder.create();
         alert.show();
     }
+
     @Override
     public void onLocationChanged(Location location) {
         coordLat = location.getLatitude();
@@ -274,7 +277,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
         // Add a marker in Paul Sab and move the camera
         LatLng paulSab = new LatLng(43.560653, 1.467676);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(paulSab, 15));

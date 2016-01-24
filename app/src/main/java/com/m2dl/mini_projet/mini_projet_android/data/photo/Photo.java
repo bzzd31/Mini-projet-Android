@@ -15,8 +15,8 @@ public class Photo {
     private List<Tag> tags;
     private String url;
 
-    public Photo(String author, double coordLat, double coordLong) {
-        this(author, coordLat, coordLong, null, null);
+    public Photo(String author, double coordLat, double coordLong, Date date) {
+        this(author, coordLat, coordLong, date, null);
     }
 
     public Photo(String author, double coordLat, double coordLong, Date date, String url) {
@@ -54,6 +54,10 @@ public class Photo {
 
     public String getUrl() {
         return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override
