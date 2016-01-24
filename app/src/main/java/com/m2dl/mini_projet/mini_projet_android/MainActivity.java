@@ -43,6 +43,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
 import com.m2dl.mini_projet.mini_projet_android.fragment.PhotoDialogFragment;
+import com.m2dl.mini_projet.mini_projet_android.provider.IPhotoProvider;
+import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProviderMock;
 import com.m2dl.mini_projet.mini_projet_android.utils.PointInteretManager;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 
@@ -76,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     private PointInteretManager pointInteretManager;
     private Set<Tag> tags;
+
+    private IPhotoProvider photoProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,10 +121,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mapFragment.getMapAsync(this);
         pointInteretManager = new PointInteretManager(this);
 
-
         // Init tag list
         tags = new TreeSet<>();
         tags.addAll(pointInteretManager.getPointInterets());
+
+        // Temp provider
+        photoProvider = new PhotoProviderMock();
     }
 
     public void takePhoto(View view) {
@@ -306,6 +312,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     mMap.addCircle((CircleOptions) options);
                 }
             }
+        }
+
+        // Place all photos
+        for (Photo photo : photoProvider.getPhotos()) {
+            putInPhotoMarkers(photo);
         }
     }
 
