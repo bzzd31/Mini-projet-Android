@@ -45,6 +45,7 @@ import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
 import com.m2dl.mini_projet.mini_projet_android.fragment.PhotoDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.provider.IPhotoProvider;
 import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProviderMock;
+import com.m2dl.mini_projet.mini_projet_android.utils.BitmapUtil;
 import com.m2dl.mini_projet.mini_projet_android.utils.PointInteretManager;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 
@@ -148,16 +149,16 @@ public class MainActivity
                     ContentResolver cr = getContentResolver();
                     try {
                         myBitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, selectedImage);
-                        myBitmap = resize(myBitmap);
+                        myBitmap = BitmapUtil.resize(myBitmap);
                         File imageFile = new File(imageUri.toString());
                         ExifInterface exif = new ExifInterface(imageFile.getCanonicalPath().replace("/file:", ""));
                         int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
                         switch (orientation) {
                             case ExifInterface.ORIENTATION_ROTATE_90:
-                                myBitmap = rotateImage(myBitmap, 90);
+                                myBitmap = BitmapUtil.rotateImage(myBitmap, 90);
                                 break;
                             case ExifInterface.ORIENTATION_ROTATE_180:
-                                myBitmap = rotateImage(myBitmap, 180);
+                                myBitmap = BitmapUtil.rotateImage(myBitmap, 180);
                                 break;
                         }
                         String dialogTitle;
@@ -193,46 +194,6 @@ public class MainActivity
                     }
                 }
         }
-    }
-
-    private Bitmap rotateImage(Bitmap source, float angle) {
-        Bitmap retVal;
-
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        retVal = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
-
-        return retVal;
-    }
-
-    private Bitmap resize(Bitmap bMap) {
-        if ((float) bMap.getHeight() / (float) bMap.getWidth() == .5625 ||
-                (float) bMap.getWidth() / (float) bMap.getHeight() == .5625) { //16/9
-            if (bMap.getHeight() < bMap.getWidth()) {
-                //bMap = Bitmap.createScaledBitmap(bMap, 1024, 576, false);
-                bMap = Bitmap.createScaledBitmap(bMap, 1280, 720, false); //720p
-            } else {
-                //bMap = Bitmap.createScaledBitmap(bMap, 576, 1024, false);
-                bMap = Bitmap.createScaledBitmap(bMap, 720, 1280, false); //720p
-            }
-        } else if ((float) bMap.getHeight() / (float) bMap.getWidth() == .625 ||
-                (float) bMap.getWidth() / (float) bMap.getHeight() == .625) { //16/10
-            if (bMap.getHeight() < bMap.getWidth()) {
-                //bMap = Bitmap.createScaledBitmap(bMap, 960, 600, false);
-                bMap = Bitmap.createScaledBitmap(bMap, 1152, 720, false); //720p
-            } else {
-                //bMap = Bitmap.createScaledBitmap(bMap, 600, 960, false);
-                bMap = Bitmap.createScaledBitmap(bMap, 720, 1152, false); //720p
-            }
-        } else if ((float) bMap.getHeight() / (float) bMap.getWidth() == .75 ||
-                (float) bMap.getWidth() / (float) bMap.getHeight() == .75) { //4/3
-            if (bMap.getHeight() < bMap.getWidth()) {
-                bMap = Bitmap.createScaledBitmap(bMap, 960, 720, false);
-            } else {
-                bMap = Bitmap.createScaledBitmap(bMap, 720, 960, false);
-            }
-        }
-        return bMap;
     }
 
     private void buildAlertMessageNoGps() {
