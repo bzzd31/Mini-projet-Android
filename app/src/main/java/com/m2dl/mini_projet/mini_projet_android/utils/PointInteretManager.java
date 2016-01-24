@@ -58,7 +58,7 @@ public class PointInteretManager {
         mapPointInteret = new HashMap<>();
 
         // Carton
-        PointInteret pointInteretCarton = new PointInteret("Carton",
+        PointInteret pointInteretCarton = new PointInteret("carton",
                 ContextCompat.getColor(context, R.color.carton));
         mapPointInteret.put(pointInteretCarton, new ArrayList<>());
 
@@ -88,7 +88,7 @@ public class PointInteretManager {
                 new LatLng(43.5665,1.46965));
 
         // Piles
-        PointInteret pointInteretPiles = new PointInteret("Piles",
+        PointInteret pointInteretPiles = new PointInteret("piles",
                 ContextCompat.getColor(context, R.color.piles));
         mapPointInteret.put(pointInteretPiles, new ArrayList<>());
 
@@ -103,7 +103,7 @@ public class PointInteretManager {
                 new LatLng(43.56446,1.46602));
 
         // Textiles
-        PointInteret pointInteretTextiles = new PointInteret("Textiles",
+        PointInteret pointInteretTextiles = new PointInteret("textiles",
                 ContextCompat.getColor(context, R.color.textiles));
         mapPointInteret.put(pointInteretTextiles, new ArrayList<>());
 
@@ -111,7 +111,7 @@ public class PointInteretManager {
         addPoint(pointInteretTextiles, new LatLng(43.56305,1.45935));
 
         // Papier
-        PointInteret pointInterePapier = new PointInteret("Papier",
+        PointInteret pointInterePapier = new PointInteret("papier",
                 ContextCompat.getColor(context, R.color.papier));
         mapPointInteret.put(pointInterePapier, new ArrayList<>());
 
@@ -213,7 +213,7 @@ public class PointInteretManager {
                 new LatLng(43.5579,1.46945));
 
         // Verre
-        PointInteret pointIntereVerre = new PointInteret("Verre",
+        PointInteret pointIntereVerre = new PointInteret("verre",
                 ContextCompat.getColor(context, R.color.verre));
         mapPointInteret.put(pointIntereVerre, new ArrayList<>());
 
