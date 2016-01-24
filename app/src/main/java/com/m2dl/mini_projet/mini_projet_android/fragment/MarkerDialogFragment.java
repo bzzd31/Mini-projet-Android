@@ -7,11 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.m2dl.mini_projet.mini_projet_android.R;
 import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
+import com.m2dl.mini_projet.mini_projet_android.utils.BitmapUtil;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -41,7 +43,11 @@ public class MarkerDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.marker_view, container, false);
         if (getArguments() != null) {
+            BitmapUtil bitmapUtil = new BitmapUtil();
             ImageView bitmapDialog = (ImageView) v.findViewById(R.id.imageView);
+            ProgressBar progress = (ProgressBar)v.findViewById(R.id.loadingPanel);
+            progress.setVisibility(View.VISIBLE);
+            bitmapUtil.loadBitmap(bitmapDialog, progress, getArguments().getString("url"));
             TextView pseudoTV = (TextView)v.findViewById(R.id.textViewPseudo);
             pseudoTV.setText(pseudoTV.getText()+getArguments().getString("author"));
             TextView dateTV = (TextView)v.findViewById(R.id.textViewDate);
@@ -58,8 +64,8 @@ public class MarkerDialogFragment extends DialogFragment {
 
         getDialog().setTitle("Visualisation du marker");
 
-        Button buttonQuitter = (Button)v.findViewById(R.id.buttonQuitter);
-        buttonQuitter.setOnClickListener(new View.OnClickListener() {
+        Button buttonFermer = (Button)v.findViewById(R.id.buttonFermer);
+        buttonFermer.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 getDialog().dismiss();
             }

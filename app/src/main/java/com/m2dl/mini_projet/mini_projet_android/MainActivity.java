@@ -328,11 +328,8 @@ public class MainActivity
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(this, "Info window clicked", Toast.LENGTH_SHORT).show();
-        Log.i("MARKER_CLICKED", marker+"");
         mMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
         Photo myPhoto = myPhotoMarkers.get(marker);
-        Log.i("MARKER_PHOTO", myPhoto.toString());
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag("dialogMarker");
         if (prev != null) {
@@ -340,7 +337,7 @@ public class MainActivity
         }
         ft.addToBackStack(null);
         DialogFragment newFragment = MarkerDialogFragment.newInstance(myPhoto);
-        newFragment.show(ft, "dialog");
+        newFragment.show(ft, "dialogMarker");
         return true;
     }
 

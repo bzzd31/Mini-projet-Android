@@ -16,10 +16,29 @@ public class PhotoProviderMock implements IPhotoProvider {
     public PhotoProviderMock() {
         photoList = new ArrayList<>();
 
-        photoList.add(new Photo(null, "author1", 43.55780, 1.46934, new Date(), "http://i.imgur.com/2kr3TIL.jpg"));
-        photoList.add(new Photo(null, "author2", 43.56406, 1.46625, new Date(), "http://i.imgur.com/2kr3TIL.jpg"));
-        photoList.add(new Photo(null, "author3", 43.56674, 1.46968, new Date(), "http://i.imgur.com/2kr3TIL.jpg"));
-        photoList.add(new Photo(null, "author4", 43.56472, 1.46617, new Date(), "http://i.imgur.com/2kr3TIL.jpg"));
+        Photo photo = new Photo(null, "author1", 43.55780, 1.46934, new Date(), "http://i.imgur.com/2kr3TIL.jpg");
+        photo.putTag(new Tag("loutre"));
+        photo.putTag(new Tag("nature"));
+        photo.putTag(new Tag("CDLM"));
+        photoList.add(photo);
+
+        photo = new Photo(null, "author2", 43.56406, 1.46625, new Date(), "http://i.imgur.com/dsHgAwF.jpg");
+        photo.putTag(new Tag("loutre"));
+        photo.putTag(new Tag("nature"));
+        photo.putTag(new Tag("CDLM"));
+        photoList.add(photo);
+
+        photo = new Photo(null, "author3", 43.56674, 1.46968, new Date(), "http://i.imgur.com/d51kPty.jpg");
+        photo.putTag(new Tag("loutre"));
+        photo.putTag(new Tag("nature"));
+        photo.putTag(new Tag("CDLM"));
+        photoList.add(photo);
+
+        photo = new Photo(null, "author4", 43.56472, 1.46617, new Date(), "http://i.imgur.com/3h8sJ27.jpg");
+        photo.putTag(new Tag("loutre"));
+        photo.putTag(new Tag("nature"));
+        photo.putTag(new Tag("CDLM"));
+        photoList.add(photo);
     }
 
     @Override

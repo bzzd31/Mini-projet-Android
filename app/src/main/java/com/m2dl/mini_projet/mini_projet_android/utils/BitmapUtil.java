@@ -1,7 +1,16 @@
 package com.m2dl.mini_projet.mini_projet_android.utils;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class BitmapUtil {
 
@@ -43,5 +52,9 @@ public class BitmapUtil {
             }
         }
         return bMap;
+    }
+
+    public static void loadBitmap(ImageView iv, ProgressBar pb, String src) {
+        new DownloadImageTask(iv, pb).execute(src);
     }
 }
