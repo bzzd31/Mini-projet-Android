@@ -12,5 +12,5 @@ public interface IPhotoProvider {
 
     List<Photo> getPhotos(); //donner un URL à chaque photo renvoyé du serveur
 
-    Photo post(Bitmap photo, String author, Date date, double coordLat, double coordLong, List<Tag> tags);
+    String post(Bitmap photo, String author, Date date, double coordLat, double coordLong, List<Tag> tags); //un post retourne l'URL de la photo
 }

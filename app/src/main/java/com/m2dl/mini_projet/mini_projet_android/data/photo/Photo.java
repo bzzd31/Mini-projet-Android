@@ -1,5 +1,7 @@
 package com.m2dl.mini_projet.mini_projet_android.data.photo;
 
+import android.graphics.Bitmap;
+
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 
 import java.util.ArrayList;
@@ -14,18 +16,24 @@ public class Photo {
     private Date date;
     private List<Tag> tags;
     private String url;
+    private Bitmap myBitmap;
 
-    public Photo(String author, double coordLat, double coordLong, Date date) {
-        this(author, coordLat, coordLong, date, null);
+    public Photo(Bitmap myBitmap, String author, double coordLat, double coordLong, Date date) {
+        this(myBitmap, author, coordLat, coordLong, date, null);
     }
 
-    public Photo(String author, double coordLat, double coordLong, Date date, String url) {
+    public Photo(Bitmap myBitmap, String author, double coordLat, double coordLong, Date date, String url) {
+        this.myBitmap = myBitmap;
         this.author = author;
         this.coordLat = coordLat;
         this.coordLong = coordLong;
         this.date = date;
         this.url = url;
         this.tags = new ArrayList<>();
+    }
+
+    public Bitmap getMyBitmap() {
+        return myBitmap;
     }
 
     public void putTag(Tag tag) {

@@ -12,9 +12,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.m2dl.mini_projet.mini_projet_android.MainActivity;
 import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
 import com.m2dl.mini_projet.mini_projet_android.R;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
+import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProviderMock;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +30,7 @@ public class PhotoDialogFragment extends DialogFragment {
     private ArrayList<String> tags;
     private double coordLat;
     private double coordLong;
+    private Bitmap myBitmap;
 
     public static PhotoDialogFragment newInstance(Bitmap myBitmap, double coordLat, double coordLong) {
         PhotoDialogFragment dialog = new PhotoDialogFragment();
@@ -44,7 +47,7 @@ public class PhotoDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.menu_photo_view, container, false);
         if (getArguments() != null) {
-            Bitmap myBitmap = getArguments().getParcelable("photo");
+            myBitmap = getArguments().getParcelable("photo");
             ImageView bitmapDialog = (ImageView)v.findViewById(R.id.imageView);
             bitmapDialog.setImageBitmap(myBitmap);
 
@@ -87,14 +90,18 @@ public class PhotoDialogFragment extends DialogFragment {
                 }
 
                 if(tagsConfirmed && authorConfirmed) {
-                    Photo myPhoto = new Photo(etPseudo.getText().toString(), coordLat, coordLong, currentDate);
+                    Photo myPhoto = new Photo(myBitmap, etPseudo.getText().toString(), coordLat, coordLong, currentDate);
                     String[] myTags = etTags.getText().toString().split(",");
                     for (String tag: myTags) {
                         Tag myTag = new Tag(tag.replaceAll("\\s", ""));
                         myPhoto.putTag(myTag);
                     }
+
+                    PhotoProviderMock myFakeProvider = new PhotoProviderMock();
+                    myPhoto.setUrl(myFakeProvider.post(myPhoto.getMyBitmap(), myPhoto.getAuthor(), myPhoto.getDate(),
+                            myPhoto.getCoordLat(), myPhoto.getCoordLong(), myPhoto.getTags()));
+                    ((MainActivity)getActivity()).putInPhotoMarkers(myPhoto);
                     getDialog().dismiss();
-                    Log.i("MYPHOTO", myPhoto.toString());
                 }
             }
         });

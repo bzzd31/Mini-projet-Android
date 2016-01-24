@@ -38,24 +38,28 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
 import com.m2dl.mini_projet.mini_projet_android.fragment.PhotoDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.utils.PointInteretManager;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class MainActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     public static final String TAG = "UPS-Caring";
 
     private LocationManager locationManager = null;
+
+    private HashMap<Marker, Photo> myPhotoMarkers;
 
     private Uri imageUri;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
@@ -82,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+
+        myPhotoMarkers = new HashMap<>();
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -286,6 +292,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(paulSab, 15));
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
+        mMap.setOnMarkerClickListener(this);
+
         // Add default interest point as polygon/circle to the map
         Map<Tag, List<Object>> mapPointInteret = pointInteretManager.getMapPointInteret();
         for (Tag pointInteret : mapPointInteret.keySet()) {
@@ -299,6 +307,22 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 }
             }
         }
+    }
+
+    public void putInPhotoMarkers(Photo photo) {
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(photo.getCoordLat(), photo.getCoordLong())));
+        myPhotoMarkers.put(marker, photo);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Toast.makeText(this, "Info window clicked", Toast.LENGTH_SHORT).show();
+        Log.i("MARKER_CLICKED", marker+"");
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+        Photo myPhoto = myPhotoMarkers.get(marker);
+        Log.i("MARKER_PHOTO", myPhoto.toString());
+        return true;
     }
 
     private boolean screenIsLarge()
@@ -317,4 +341,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         return false;
 
     }
+
+
+
 }
