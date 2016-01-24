@@ -26,7 +26,6 @@ public class PhotoDialogFragment extends DialogFragment {
 
     private EditText etPseudo, etTags;
 
-    private String pseudo;
     private ArrayList<String> tags;
     private double coordLat;
     private double coordLong;
@@ -73,7 +72,6 @@ public class PhotoDialogFragment extends DialogFragment {
         buttonConfirmer.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Date currentDate = new Date(System.currentTimeMillis());
-                Log.i("DATE", currentDate+"");
                 Boolean authorConfirmed = false, tagsConfirmed = false;
                 if (!etPseudo.getText().toString().isEmpty()) {
                     authorConfirmed = true;

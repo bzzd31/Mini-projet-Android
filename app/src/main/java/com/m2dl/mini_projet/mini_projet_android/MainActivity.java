@@ -41,6 +41,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
+import com.m2dl.mini_projet.mini_projet_android.fragment.MarkerDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.fragment.PhotoDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.provider.IPhotoProvider;
 import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProviderMock;
@@ -332,6 +333,14 @@ public class MainActivity
         mMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
         Photo myPhoto = myPhotoMarkers.get(marker);
         Log.i("MARKER_PHOTO", myPhoto.toString());
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialogMarker");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        DialogFragment newFragment = MarkerDialogFragment.newInstance(myPhoto);
+        newFragment.show(ft, "dialog");
         return true;
     }
 
