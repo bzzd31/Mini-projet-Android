@@ -2,7 +2,6 @@ package com.m2dl.mini_projet.mini_projet_android;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.support.v4.app.Fragment;
 import android.app.FragmentManager;
@@ -212,6 +211,24 @@ public class MainActivity
                 });
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.removeUpdates(this);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 5, this);
+        }
     }
 
     @Override
