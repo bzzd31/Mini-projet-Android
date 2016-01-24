@@ -55,31 +55,30 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class MainActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class MainActivity
+        extends AppCompatActivity
+        implements LocationListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     public static final String TAG = "UPS-Caring";
-
-    private LocationManager locationManager = null;
-
-    private HashMap<Marker, Photo> myPhotoMarkers;
 
     private Uri imageUri;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private Bitmap myBitmap;
-    private Boolean isGPSOn = false;
-
-    SupportMapFragment mapFragment;
 
     private GoogleMap mMap;
+    private SupportMapFragment mapFragment;
 
     private FragmentManager fm;
 
+    private LocationManager locationManager = null;
+    private Boolean isGPSOn = false;
     private double coordLat, coordLong;
 
     private PointInteretManager pointInteretManager;
     private Set<Tag> tags;
 
     private IPhotoProvider photoProvider;
+    private Map<Marker, Photo> myPhotoMarkers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,10 +114,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         fm = getFragmentManager();
 
-
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         pointInteretManager = new PointInteretManager(this);
 
         // Init tag list
@@ -300,6 +299,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         mMap.setOnMarkerClickListener(this);
 
+        showDefaultPoint();
+
+        showPhotoMarker();
+    }
+
+    private void showDefaultPoint() {
         // Add default interest point as polygon/circle to the map
         Map<Tag, List<Object>> mapPointInteret = pointInteretManager.getMapPointInteret();
         for (Tag pointInteret : mapPointInteret.keySet()) {
@@ -313,8 +318,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 }
             }
         }
+    }
 
-        // Place all photos
+    private void showPhotoMarker() {
+        // Place all photos on map
         for (Photo photo : photoProvider.getPhotos()) {
             putInPhotoMarkers(photo);
         }
@@ -324,6 +331,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(photo.getCoordLat(), photo.getCoordLong())));
         myPhotoMarkers.put(marker, photo);
+    }
+
+    public void refreshPhoto() {
+        for (Marker marker : myPhotoMarkers.keySet()) {
+            marker.remove();
+        }
+        myPhotoMarkers.clear();
+
+        // TODO: see Charles implementation
+        // Store List<Photo> in this class
+        //   listPhoto = photoProvider.getPhotos();
+        // or
+        // Store List<Photo> in provider class
+        //   photoProvider.update() ?
     }
 
     @Override
@@ -350,9 +371,5 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
 
         return false;
-
     }
-
-
-
 }
