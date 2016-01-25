@@ -15,6 +15,7 @@ public class Photo {
     private String author;
     private Date date;
     private List<Tag> tags;
+    private String tag;
     private String url;
     private Bitmap myBitmap;
 
@@ -62,6 +63,14 @@ public class Photo {
 
     public String getUrl() {
         return url;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     public void setUrl(String url) {
