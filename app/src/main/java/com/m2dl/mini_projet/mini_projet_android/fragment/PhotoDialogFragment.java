@@ -95,9 +95,11 @@ public class PhotoDialogFragment extends DialogFragment {
                         myPhoto.putTag(myTag);
                     }
 
+                    String tag = etTags.getText().toString().replaceAll("\\s", "");
+
                     PhotoProviderMock myFakeProvider = new PhotoProviderMock();
                     myPhoto.setUrl(myFakeProvider.post(myPhoto.getMyBitmap(), myPhoto.getAuthor(), myPhoto.getDate(),
-                            myPhoto.getCoordLat(), myPhoto.getCoordLong(), myPhoto.getTags()));
+                            myPhoto.getCoordLat(), myPhoto.getCoordLong(), tag));
                     ((MainActivity)getActivity()).putInPhotoMarkers(myPhoto);
                     getDialog().dismiss();
                 }

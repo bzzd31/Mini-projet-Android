@@ -3,6 +3,7 @@ package com.m2dl.mini_projet.mini_projet_android;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.media.ExifInterface;
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -45,6 +46,7 @@ import com.m2dl.mini_projet.mini_projet_android.fragment.MarkerDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.fragment.PhotoDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.fragment.TagSelectDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.provider.IPhotoProvider;
+import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProvider;
 import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProviderMock;
 import com.m2dl.mini_projet.mini_projet_android.utils.BitmapUtil;
 import com.m2dl.mini_projet.mini_projet_android.utils.PointInteretManager;
@@ -134,7 +136,7 @@ public class MainActivity
         pointInteretManager = new PointInteretManager(this);
 
         // Temp provider
-        photoProvider = new PhotoProviderMock();
+        photoProvider = new PhotoProvider();
 
         // Init tag list
         allTags = new TreeSet<>();
@@ -305,7 +307,7 @@ public class MainActivity
 
         showDefaultPoint();
 
-        showPhotoMarker();
+        refreshPhoto();
     }
 
     private void showDefaultPoint() {
@@ -324,13 +326,20 @@ public class MainActivity
         }
     }
 
-    private void showPhotoMarker() {
+    /*private void showPhotoMarker() {
         // Place all photos on map
         for (Photo photo : photoProvider.getPhotos()) {
             // Check if photo contains tag in selectedTags
             if (TagUtil.containsOneOf(selectedTags, photo.getTags())) {
                 putInPhotoMarkers(photo);
             }
+        }
+    }*/
+
+    private void showPhotoMarker(List<Photo> photos) {
+        // Place all photos on map
+        for (Photo photo : photos) {
+            putInPhotoMarkers(photo);
         }
     }
 
@@ -345,6 +354,18 @@ public class MainActivity
             marker.remove();
         }
         myPhotoMarkers.clear();
+        AsyncTask<Void,Void,List<Photo>> asyncTask = new AsyncTask<Void, Void, List<Photo>>() {
+            @Override
+            protected List<Photo> doInBackground(Void... params) {
+                return photoProvider.getPhotos();
+            }
+
+            @Override
+            protected void onPostExecute(List<Photo> photos) {
+                showPhotoMarker(photos);
+            }
+        };
+        asyncTask.execute();
 
         showPhotoMarker();
 

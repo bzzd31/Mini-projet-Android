@@ -1,9 +1,11 @@
-package com.m2dl.mini_projet.mini_projet_android.photos;
+package com.m2dl.mini_projet.mini_projet_android.provider;
 
 import android.graphics.Bitmap;
 
 import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
+import com.m2dl.mini_projet.mini_projet_android.photos.ServiceGenerator;
+import com.m2dl.mini_projet.mini_projet_android.photos.SimpleImageTag;
 import com.m2dl.mini_projet.mini_projet_android.photos.model.PhotoList;
 import com.m2dl.mini_projet.mini_projet_android.photos.storage.CloudinaryHelper;
 import com.m2dl.mini_projet.mini_projet_android.provider.IPhotoProvider;
@@ -28,6 +30,11 @@ public class PhotoProvider implements IPhotoProvider {
         for(com.m2dl.mini_projet.mini_projet_android.photos.model.Photo p : photoList.photos) {
             Photo photo = new Photo(null, p.author, p.coordLat, p.coordLong, p.date, p.getUrl());
             photo.setTag(p.tags);
+            String[] myTags = p.tags.split(",");
+            for (String tag: myTags) {
+                Tag myTag = new Tag(tag.replaceAll("\\s", ""));
+                photo.putTag(myTag);
+            }
         }
 
         return photos;
@@ -35,7 +42,7 @@ public class PhotoProvider implements IPhotoProvider {
 
 
     @Override
-    public String post(Bitmap photo, String author, Date date, double coordLat, double coordLong, List<Tag> tags) {
+    public String post(Bitmap photo, String author, Date date, double coordLat, double coordLong, String tags) {
         //photo should be a File or an Inputstream. Can transform, but not necessary
         String id = CloudinaryHelper.upload(null);
         com.m2dl.mini_projet.mini_projet_android.photos.model.Photo p = new com.m2dl.mini_projet.mini_projet_android.photos.model.Photo();
@@ -43,18 +50,8 @@ public class PhotoProvider implements IPhotoProvider {
         p.date = new Date();
         p.coordLat = coordLat;
         p.coordLong = coordLong;
-        p.tags = getString(tags);
+        p.tags = tags;
         ServiceGenerator.createService(SimpleImageTag.class).postPhoto(p);
         return p.getUrl();
-    }
-
-    private String getString(List<Tag> tags) {
-        StringBuilder builder = new StringBuilder();
-        for(Tag t : tags) {
-            builder.append(t.getNom());
-            builder.append(",");
-        }
-        builder.deleteCharAt(builder.length() -1);
-        return builder.toString();
     }
 }
