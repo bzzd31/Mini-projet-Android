@@ -43,13 +43,16 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
 import com.m2dl.mini_projet.mini_projet_android.fragment.MarkerDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.fragment.PhotoDialogFragment;
+import com.m2dl.mini_projet.mini_projet_android.fragment.TagSelectDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.provider.IPhotoProvider;
 import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProviderMock;
 import com.m2dl.mini_projet.mini_projet_android.utils.BitmapUtil;
 import com.m2dl.mini_projet.mini_projet_android.utils.PointInteretManager;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
+import com.m2dl.mini_projet.mini_projet_android.utils.TagUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +79,8 @@ public class MainActivity
     private double coordLat, coordLong;
 
     private PointInteretManager pointInteretManager;
-    private Set<Tag> tags;
+    private Set<Tag> allTags;
+    private Set<Tag> selectedTags;
 
     private IPhotoProvider photoProvider;
     private Map<Marker, Photo> myPhotoMarkers;
@@ -105,11 +109,19 @@ public class MainActivity
             isGPSOn = true;
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fabPhoto = (FloatingActionButton) findViewById(R.id.fabPhoto);
+        fabPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 takePhoto(view);
+            }
+        });
+
+        FloatingActionButton fabTagSelect = (FloatingActionButton) findViewById(R.id.fabTagSelect);
+        fabTagSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectTags();
             }
         });
 
@@ -121,12 +133,14 @@ public class MainActivity
 
         pointInteretManager = new PointInteretManager(this);
 
-        // Init tag list
-        tags = new TreeSet<>();
-        tags.addAll(pointInteretManager.getPointInterets());
-
         // Temp provider
         photoProvider = new PhotoProviderMock();
+
+        // Init tag list
+        allTags = new TreeSet<>();
+        allTags.addAll(pointInteretManager.getPointInterets());
+        allTags.addAll(TagUtil.extractTags(photoProvider.getPhotos()));
+        selectedTags = new TreeSet<>(allTags);
     }
 
     public void takePhoto(View view) {
@@ -135,6 +149,17 @@ public class MainActivity
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
         imageUri = Uri.fromFile(photo);
         startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    private void selectTags() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        DialogFragment newFragment = TagSelectDialogFragment.newInstance(new ArrayList<>(allTags), new ArrayList<>(selectedTags));
+        newFragment.show(ft, "dialog");
     }
 
     @Override
@@ -302,7 +327,10 @@ public class MainActivity
     private void showPhotoMarker() {
         // Place all photos on map
         for (Photo photo : photoProvider.getPhotos()) {
-            putInPhotoMarkers(photo);
+            // Check if photo contains tag in selectedTags
+            if (TagUtil.containsOneOf(selectedTags, photo.getTags())) {
+                putInPhotoMarkers(photo);
+            }
         }
     }
 
@@ -318,12 +346,19 @@ public class MainActivity
         }
         myPhotoMarkers.clear();
 
+        showPhotoMarker();
+
         // TODO: see Charles implementation
         // Store List<Photo> in this class
         //   listPhoto = photoProvider.getPhotos();
         // or
         // Store List<Photo> in provider class
         //   photoProvider.update() ?
+    }
+
+    public void setSelectedTags(List<Tag> newSelectedTags) {
+        selectedTags.clear();
+        selectedTags.addAll(newSelectedTags);
     }
 
     @Override
