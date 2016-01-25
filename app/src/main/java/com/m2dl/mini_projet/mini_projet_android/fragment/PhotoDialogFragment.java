@@ -16,8 +16,11 @@ import com.m2dl.mini_projet.mini_projet_android.MainActivity;
 import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
 import com.m2dl.mini_projet.mini_projet_android.R;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
+import com.m2dl.mini_projet.mini_projet_android.provider.IPhotoProvider;
+import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProvider;
 import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProviderMock;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -30,13 +33,15 @@ public class PhotoDialogFragment extends DialogFragment {
     private double coordLat;
     private double coordLong;
     private Bitmap myBitmap;
+    private String imageFilePath;
 
-    public static PhotoDialogFragment newInstance(Bitmap myBitmap, double coordLat, double coordLong) {
+    public static PhotoDialogFragment newInstance(Bitmap myBitmap, double coordLat, double coordLong, String imageFilePath) {
         PhotoDialogFragment dialog = new PhotoDialogFragment();
         Bundle args = new Bundle();
         args.putParcelable("photo", myBitmap);
         args.putDouble("coordLat", coordLat);
         args.putDouble("coordLong", coordLong);
+        args.putString("imageFilePath", imageFilePath);
         dialog.setArguments(args);
         return dialog;
     }
@@ -52,8 +57,10 @@ public class PhotoDialogFragment extends DialogFragment {
 
             coordLat = getArguments().getDouble("coordLat");
             coordLong = getArguments().getDouble("coordLong");
-            TextView coord = (TextView)v.findViewById(R.id.textViewCoord);
-            coord.setText("Latitude: " + coordLat + "  Longitude: " + coordLong);
+            /*TextView coord = (TextView)v.findViewById(R.id.textViewCoord);
+            coord.setText("Latitude: " + coordLat + "  Longitude: " + coordLong);*/
+
+            imageFilePath = getArguments().getString("imageFilePath");
         }
 
         getDialog().setTitle("Uploader votre photo");
@@ -97,9 +104,9 @@ public class PhotoDialogFragment extends DialogFragment {
 
                     String tag = etTags.getText().toString().replaceAll("\\s", "");
 
-                    PhotoProviderMock myFakeProvider = new PhotoProviderMock();
-                    myPhoto.setUrl(myFakeProvider.post(myPhoto.getMyBitmap(), myPhoto.getAuthor(), myPhoto.getDate(),
-                            myPhoto.getCoordLat(), myPhoto.getCoordLong(), tag));
+                    PhotoProvider myProvider = new PhotoProvider();
+                    myPhoto.setUrl(myProvider.post(myPhoto.getMyBitmap(), myPhoto.getAuthor(), myPhoto.getDate(),
+                            myPhoto.getCoordLat(), myPhoto.getCoordLong(), tag, imageFilePath));
                     ((MainActivity)getActivity()).putInPhotoMarkers(myPhoto);
                     getDialog().dismiss();
                 }

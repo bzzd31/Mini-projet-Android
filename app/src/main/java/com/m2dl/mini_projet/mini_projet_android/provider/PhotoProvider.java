@@ -10,6 +10,13 @@ import com.m2dl.mini_projet.mini_projet_android.photos.model.PhotoList;
 import com.m2dl.mini_projet.mini_projet_android.photos.storage.CloudinaryHelper;
 import com.m2dl.mini_projet.mini_projet_android.provider.IPhotoProvider;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +49,18 @@ public class PhotoProvider implements IPhotoProvider {
 
 
     @Override
-    public String post(Bitmap photo, String author, Date date, double coordLat, double coordLong, String tags) {
+    public String post(Bitmap photo, String author, Date date, double coordLat, double coordLong, String tags, String imageFilePath) {
+        File file = new File(imageFilePath);
+        OutputStream os = null;
+        try {
+            os = new BufferedOutputStream(new FileOutputStream(file));
+            photo.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //photo should be a File or an Inputstream. Can transform, but not necessary
         String id = CloudinaryHelper.upload(null);
         com.m2dl.mini_projet.mini_projet_android.photos.model.Photo p = new com.m2dl.mini_projet.mini_projet_android.photos.model.Photo();

@@ -51,7 +51,7 @@ public class PhotoProviderMock implements IPhotoProvider {
     }
 
     @Override
-    public String post(Bitmap photo, String author, Date date, double coordLat, double coordLong, String tags) {
+    public String post(Bitmap photo, String author, Date date, double coordLat, double coordLong, String tags, String imageFilePath) {
         return "http://i.imgur.com/2kr3TIL.jpg";
     }
 }

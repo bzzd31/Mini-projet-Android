@@ -70,6 +70,7 @@ public class MainActivity
     private Uri imageUri;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private Bitmap myBitmap;
+    private String imageFilePath;
 
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
@@ -177,7 +178,8 @@ public class MainActivity
                     try {
                         myBitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, selectedImage);
                         myBitmap = BitmapUtil.resize(myBitmap);
-                        File imageFile = new File(imageUri.toString());
+                        imageFilePath = imageUri.toString();
+                        File imageFile = new File(imageFilePath);
                         ExifInterface exif = new ExifInterface(imageFile.getCanonicalPath().replace("/file:", ""));
                         int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
                         switch (orientation) {
@@ -208,7 +210,7 @@ public class MainActivity
                                         ft.remove(prev);
                                     }
                                     ft.addToBackStack(null);
-                                    DialogFragment newFragment = PhotoDialogFragment.newInstance(myBitmap, coordLat, coordLong);
+                                    DialogFragment newFragment = PhotoDialogFragment.newInstance(myBitmap, coordLat, coordLong, imageFilePath);
                                     newFragment.show(ft, "dialog");
                                 } catch (Exception e) {
                                 }
