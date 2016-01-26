@@ -359,6 +359,7 @@ public class MainActivity
         for (Marker marker : myPhotoMarkers.keySet()) {
             marker.remove();
         }
+        final boolean[] loaded = {false};
         myPhotoMarkers.clear();
         Callback<List<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo>> callback = new Callback<List<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo>>() {
             @Override
@@ -377,6 +378,7 @@ public class MainActivity
                 allTags.addAll(TagUtil.extractTags(photos));
                 selectedTags = new TreeSet<>(allTags);
                 showPhotoMarker(photos);
+                loaded[0] = true;
             }
 
             @Override
@@ -387,6 +389,16 @@ public class MainActivity
 
         SimpleImageTag imageTag = ServiceGenerator.createService(SimpleImageTag.class);
         imageTag.getAsyncPhotos(callback);
+        final ProgressDialog progDialog = ProgressDialog.show(this, "Récupération des points d'intérêt en cours...", "Veuillez patienter", true);
+        new Thread() {
+            public void run() {
+                try {
+                    while(!loaded[0]);
+                } catch (Exception e) {
+                }
+                progDialog.dismiss();
+            }
+        }.start();
     }
 
     public void setSelectedTags(List<Tag> newSelectedTags) {

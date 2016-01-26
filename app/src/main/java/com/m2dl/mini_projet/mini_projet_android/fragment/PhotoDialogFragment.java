@@ -167,10 +167,6 @@ public class PhotoDialogFragment extends DialogFragment {
                             progDialog.dismiss();
                         }
                     }.start();
-
-
-
-
                 }
             }
         });
