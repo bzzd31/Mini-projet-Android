@@ -405,7 +405,6 @@ public class MainActivity
         SimpleImageTag imageTag = ServiceGenerator.createService(SimpleImageTag.class);
         imageTag.getAsyncPhotos(callback);
 
-        showPhotoMarker();
 
         // TODO: see Charles implementation
         // Store List<Photo> in this class
