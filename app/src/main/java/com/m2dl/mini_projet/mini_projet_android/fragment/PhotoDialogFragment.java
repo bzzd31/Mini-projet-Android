@@ -112,7 +112,7 @@ public class PhotoDialogFragment extends DialogFragment {
                 }
 
                 if (tagsConfirmed && authorConfirmed) {
-                    final Photo myPhoto = new Photo(myBitmap, etPseudo.getText().toString(), coordLat, coordLong, currentDate);
+                    final Photo myPhoto = new Photo(myBitmap, etPseudo.getText().toString(), coordLat, coordLong, null);
                     String[] myTags = etTags.getText().toString().split(",");
                     for (String tag : myTags) {
                         Tag myTag = new Tag(tag.replaceAll("\\s", ""));
@@ -181,7 +181,7 @@ public class PhotoDialogFragment extends DialogFragment {
 
 
             p = new com.m2dl.mini_projet.mini_projet_android.photos.model.Photo();
-            p.date = new Date();
+            p.author = mphoto.getAuthor();
             p.coordLat = mphoto.getCoordLat();
             p.coordLong = mphoto.getCoordLong();
             p.tags = tags;
