@@ -360,24 +360,6 @@ public class MainActivity
             marker.remove();
         }
         myPhotoMarkers.clear();
-        /*
-        AsyncTask<Void,Void,List<Photo>> asyncTask = new AsyncTask<Void, Void, List<Photo>>() {
-            @Override
-            protected List<Photo> doInBackground(Void... params) {
-                return photoProvider.getPhotos();
-            }
-
-            @Override
-            protected void onPostExecute(List<Photo> photos) {
-                showPhotoMarker(photos);
-            }
-        };
-        try {
-            asyncTask.execute();
-        } catch ( Exception e) {
-            e.printStackTrace();
-        }
-        */
         Callback<List<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo>> callback = new Callback<List<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo>>() {
             @Override
             public void success(List<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo> photoList, Response response) {
@@ -405,14 +387,6 @@ public class MainActivity
 
         SimpleImageTag imageTag = ServiceGenerator.createService(SimpleImageTag.class);
         imageTag.getAsyncPhotos(callback);
-
-
-        // TODO: see Charles implementation
-        // Store List<Photo> in this class
-        //   listPhoto = photoProvider.getPhotos();
-        // or
-        // Store List<Photo> in provider class
-        //   photoProvider.update() ?
     }
 
     public void setSelectedTags(List<Tag> newSelectedTags) {

@@ -1,6 +1,7 @@
 package com.m2dl.mini_projet.mini_projet_android.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -121,12 +122,15 @@ public class PhotoDialogFragment extends DialogFragment {
 
                     String tag = etTags.getText().toString().replaceAll("\\s", "");
 
+                    final boolean[] uploaded = {false};
+
                     final com.m2dl.mini_projet.mini_projet_android.photos.model.Photo p = factory(myPhoto, tag, myPhoto.getMyBitmap());
                     final Callback<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo> callback = new Callback<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo>() {
                         @Override
                         public void success(com.m2dl.mini_projet.mini_projet_android.photos.model.Photo photo, Response response) {
                             myPhoto.setUrl(photo.getUrl());
                             mainActivity.putInPhotoMarkers(myPhoto);
+                            uploaded[0] = true;
                             getDialog().dismiss();
                         }
 
@@ -136,7 +140,6 @@ public class PhotoDialogFragment extends DialogFragment {
                             System.err.println("oups");
                         }
                     };
-
 
                     final SimpleImageTag simpleImageTag = ServiceGenerator.createService(SimpleImageTag.class);
 
@@ -154,6 +157,19 @@ public class PhotoDialogFragment extends DialogFragment {
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
+                    final ProgressDialog progDialog = ProgressDialog.show(mainActivity, "Upload de l'image en cours...", "Veuillez patienter", true);
+                    new Thread() {
+                        public void run() {
+                            try {
+                                while(!uploaded[0]);
+                            } catch (Exception e) {
+                            }
+                            progDialog.dismiss();
+                        }
+                    }.start();
+
+
+
 
                 }
             }
