@@ -20,7 +20,7 @@ public class CloudinaryHelper {
         try {
 
 
-            Map<String,String> result = cloudinary.uploader().upload(inputStream, ObjectUtils.emptyMap());
+            Map<String,String> result = cloudinary.uploader().upload(inputStream, ObjectUtils.asMap("sslmode", "require"));
             return result.get("public_id");
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,6 +1,7 @@
 package com.m2dl.mini_projet.mini_projet_android.fragment;
 
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -16,13 +17,27 @@ import com.m2dl.mini_projet.mini_projet_android.MainActivity;
 import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
 import com.m2dl.mini_projet.mini_projet_android.R;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
+import com.m2dl.mini_projet.mini_projet_android.photos.ServiceGenerator;
+import com.m2dl.mini_projet.mini_projet_android.photos.SimpleImageTag;
+import com.m2dl.mini_projet.mini_projet_android.photos.storage.CloudinaryHelper;
 import com.m2dl.mini_projet.mini_projet_android.provider.IPhotoProvider;
 import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProvider;
 import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProviderMock;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 
 public class PhotoDialogFragment extends DialogFragment {
@@ -88,30 +103,98 @@ public class PhotoDialogFragment extends DialogFragment {
                 }
                 if (!etTags.getText().toString().isEmpty()) {
                     tagsConfirmed = true;
-                }
-                else {
+                } else {
                     tagsConfirmed = false;
                     etTags.setError("Veuillez rentrer au moins un tag");
                 }
 
-                if(tagsConfirmed && authorConfirmed) {
-                    Photo myPhoto = new Photo(myBitmap, etPseudo.getText().toString(), coordLat, coordLong, currentDate);
+                if (tagsConfirmed && authorConfirmed) {
+                    final Photo myPhoto = new Photo(myBitmap, etPseudo.getText().toString(), coordLat, coordLong, currentDate);
                     String[] myTags = etTags.getText().toString().split(",");
-                    for (String tag: myTags) {
+                    for (String tag : myTags) {
                         Tag myTag = new Tag(tag.replaceAll("\\s", ""));
                         myPhoto.putTag(myTag);
                     }
 
                     String tag = etTags.getText().toString().replaceAll("\\s", "");
 
-                    PhotoProvider myProvider = new PhotoProvider();
-                    myPhoto.setUrl(myProvider.post(myPhoto.getMyBitmap(), myPhoto.getAuthor(), myPhoto.getDate(),
-                            myPhoto.getCoordLat(), myPhoto.getCoordLong(), tag, imageFilePath));
-                    ((MainActivity)getActivity()).putInPhotoMarkers(myPhoto);
-                    getDialog().dismiss();
+                    final com.m2dl.mini_projet.mini_projet_android.photos.model.Photo p = factory(myPhoto, tag, myPhoto.getMyBitmap());
+                    final Callback<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo> callback = new Callback<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo>() {
+                        @Override
+                        public void success(com.m2dl.mini_projet.mini_projet_android.photos.model.Photo photo, Response response) {
+                            myPhoto.setUrl(photo.getUrl());
+                            ((MainActivity) getActivity()).putInPhotoMarkers(myPhoto);
+                            getDialog().dismiss();
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            System.err.println("oups");
+                        }
+                    };
+
+
+                    final SimpleImageTag simpleImageTag = ServiceGenerator.createService(SimpleImageTag.class);
+
+                    AsyncTask<InputStream, Void, String> task = new AsyncTask<InputStream, Void, String>() {
+                        @Override
+                        protected String doInBackground(InputStream... params) {
+                            String id = CloudinaryHelper.upload(params[0]);
+                            p.id = id;
+                            simpleImageTag.postAsyncPhoto(p,callback);
+                            return id;
+                        }
+                    };
+                    try {
+                        task.execute(new FileInputStream(new File(imageFilePath)));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
                 }
             }
         });
         return v;
+    }
+
+    public com.m2dl.mini_projet.mini_projet_android.photos.model.Photo factory(Photo mphoto, String tags, Bitmap photo) {
+        File file = new File(imageFilePath);
+        OutputStream os = null;
+        try {
+            os = new BufferedOutputStream(new FileOutputStream(file));
+            photo.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //photo should be a File or an Inputstream. Can transform, but not necessary
+        com.m2dl.mini_projet.mini_projet_android.photos.model.Photo p;
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+
+
+            p = new com.m2dl.mini_projet.mini_projet_android.photos.model.Photo();
+            p.date = new Date();
+            p.coordLat = mphoto.getCoordLat();
+            p.coordLong = mphoto.getCoordLong();
+            p.tags = tags;
+        } catch (IOException e) {
+            p = null;
+            e.printStackTrace();
+        } finally {
+            /*
+            if(is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            */
+        }
+        return p;
     }
 }

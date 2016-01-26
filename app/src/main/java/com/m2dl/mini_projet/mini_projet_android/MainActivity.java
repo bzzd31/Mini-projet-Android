@@ -45,9 +45,11 @@ import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
 import com.m2dl.mini_projet.mini_projet_android.fragment.MarkerDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.fragment.PhotoDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.fragment.TagSelectDialogFragment;
+import com.m2dl.mini_projet.mini_projet_android.photos.ServiceGenerator;
+import com.m2dl.mini_projet.mini_projet_android.photos.SimpleImageTag;
+
 import com.m2dl.mini_projet.mini_projet_android.provider.IPhotoProvider;
 import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProvider;
-import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProviderMock;
 import com.m2dl.mini_projet.mini_projet_android.utils.BitmapUtil;
 import com.m2dl.mini_projet.mini_projet_android.utils.PointInteretManager;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
@@ -60,6 +62,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity
         extends AppCompatActivity
@@ -79,7 +85,7 @@ public class MainActivity
 
     private LocationManager locationManager = null;
     private Boolean isGPSOn = false;
-    private double coordLat, coordLong;
+    private Double coordLat, coordLong;
 
     private PointInteretManager pointInteretManager;
     private Set<Tag> allTags;
@@ -178,9 +184,8 @@ public class MainActivity
                     try {
                         myBitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, selectedImage);
                         myBitmap = BitmapUtil.resize(myBitmap);
-                        imageFilePath = imageUri.toString();
-                        File imageFile = new File(imageFilePath);
-                        ExifInterface exif = new ExifInterface(imageFile.getCanonicalPath().replace("/file:", ""));
+                        imageFilePath = imageUri.getPath();
+                        ExifInterface exif = new ExifInterface(imageFilePath);
                         int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
                         switch (orientation) {
                             case ExifInterface.ORIENTATION_ROTATE_90:
@@ -203,7 +208,7 @@ public class MainActivity
                         new Thread() {
                             public void run() {
                                 try {
-                                    while (coordLat == 0.0 && coordLong == 0.0) ;
+                                    //while (coordLat.equals(0.0d) && coordLong.equals(0.0d)) ;
                                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                                     Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
                                     if (prev != null) {
@@ -356,6 +361,7 @@ public class MainActivity
             marker.remove();
         }
         myPhotoMarkers.clear();
+        /*
         AsyncTask<Void,Void,List<Photo>> asyncTask = new AsyncTask<Void, Void, List<Photo>>() {
             @Override
             protected List<Photo> doInBackground(Void... params) {
@@ -367,7 +373,37 @@ public class MainActivity
                 showPhotoMarker(photos);
             }
         };
-        asyncTask.execute();
+        try {
+            asyncTask.execute();
+        } catch ( Exception e) {
+            e.printStackTrace();
+        }
+        */
+        Callback<List<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo>> callback = new Callback<List<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo>>() {
+            @Override
+            public void success(List<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo> photoList, Response response) {
+                List<Photo> photos = new ArrayList<>();
+                for (com.m2dl.mini_projet.mini_projet_android.photos.model.Photo p : photoList) {
+                    Photo photo = new Photo(null, p.author, p.coordLat, p.coordLong, p.date, p.getUrl());
+                    photo.setTag(p.tags);
+                    String[] myTags = p.tags.split(",");
+                    for (String tag : myTags) {
+                        Tag myTag = new Tag(tag.replaceAll("\\s", ""));
+                        photo.putTag(myTag);
+                    }
+                    photos.add(photo);
+                }
+                showPhotoMarker(photos);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                System.err.println("not good ...");
+            }
+        };
+
+        SimpleImageTag imageTag = ServiceGenerator.createService(SimpleImageTag.class);
+        imageTag.getAsyncPhotos(callback);
 
         showPhotoMarker();
 

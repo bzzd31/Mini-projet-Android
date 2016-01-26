@@ -13,9 +13,11 @@ import com.m2dl.mini_projet.mini_projet_android.provider.IPhotoProvider;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,11 +36,11 @@ public class PhotoProvider implements IPhotoProvider {
     public List<Photo> getPhotos() {
         PhotoList photoList = ServiceGenerator.createService(SimpleImageTag.class).getPhotos();
         List<Photo> photos = new ArrayList<>();
-        for(com.m2dl.mini_projet.mini_projet_android.photos.model.Photo p : photoList.photos) {
+        for (com.m2dl.mini_projet.mini_projet_android.photos.model.Photo p : photoList.photos) {
             Photo photo = new Photo(null, p.author, p.coordLat, p.coordLong, p.date, p.getUrl());
             photo.setTag(p.tags);
             String[] myTags = p.tags.split(",");
-            for (String tag: myTags) {
+            for (String tag : myTags) {
                 Tag myTag = new Tag(tag.replaceAll("\\s", ""));
                 photo.putTag(myTag);
             }
@@ -62,14 +64,31 @@ public class PhotoProvider implements IPhotoProvider {
             e.printStackTrace();
         }
         //photo should be a File or an Inputstream. Can transform, but not necessary
-        String id = CloudinaryHelper.upload(null);
-        com.m2dl.mini_projet.mini_projet_android.photos.model.Photo p = new com.m2dl.mini_projet.mini_projet_android.photos.model.Photo();
-        p.id = id;
-        p.date = new Date();
-        p.coordLat = coordLat;
-        p.coordLong = coordLong;
-        p.tags = tags;
-        ServiceGenerator.createService(SimpleImageTag.class).postPhoto(p);
+        com.m2dl.mini_projet.mini_projet_android.photos.model.Photo p;
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+            String id = CloudinaryHelper.upload(is);
+
+            p = new com.m2dl.mini_projet.mini_projet_android.photos.model.Photo();
+            p.id = id;
+            p.date = new Date();
+            p.coordLat = coordLat;
+            p.coordLong = coordLong;
+            p.tags = tags;
+            ServiceGenerator.createService(SimpleImageTag.class).postPhoto(p);
+        } catch (IOException e) {
+            p = null;
+            e.printStackTrace();
+        } finally {
+            if(is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         return p.getUrl();
     }
 }
