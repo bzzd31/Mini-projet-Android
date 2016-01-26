@@ -145,12 +145,13 @@ public class MainActivity
 
         pointInteretManager = new PointInteretManager(this);
 
-        // Temp provider
+        // Init provider
         photoProvider = new PhotoProvider();
 
         // Init tag list
         allTags = new TreeSet<>();
         allTags.addAll(pointInteretManager.getPointInterets());
+        selectedTags = new TreeSet<>();
 
     }
 
@@ -348,7 +349,10 @@ public class MainActivity
     private void showPhotoMarker(List<Photo> photos) {
         // Place all photos on map
         for (Photo photo : photos) {
-            putInPhotoMarkers(photo);
+            // Check if photo contains tag in selectedTags
+            if (TagUtil.containsOneOf(selectedTags, photo.getTags())) {
+                putInPhotoMarkers(photo);
+            }
         }
     }
 
@@ -378,8 +382,12 @@ public class MainActivity
                     }
                     photos.add(photo);
                 }
+                allTags.clear();
+                allTags.addAll(pointInteretManager.getPointInterets());
                 allTags.addAll(TagUtil.extractTags(photos));
-                selectedTags = new TreeSet<>(allTags);
+                // TODO: remove temp fix
+                if (selectedTags.size() == 0)
+                    selectedTags.addAll(allTags);
                 showPhotoMarker(photos);
                 loaded[0] = true;
             }
