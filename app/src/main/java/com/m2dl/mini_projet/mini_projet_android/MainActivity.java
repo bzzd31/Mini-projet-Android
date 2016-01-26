@@ -118,6 +118,9 @@ public class MainActivity
             isGPSOn = true;
         }
 
+        coordLat = 0.0;
+        coordLong = 0.0;
+        
         FloatingActionButton fabPhoto = (FloatingActionButton) findViewById(R.id.fabPhoto);
         fabPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
