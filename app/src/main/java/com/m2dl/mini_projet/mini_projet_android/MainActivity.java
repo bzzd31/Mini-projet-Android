@@ -148,8 +148,7 @@ public class MainActivity
         // Init tag list
         allTags = new TreeSet<>();
         allTags.addAll(pointInteretManager.getPointInterets());
-        allTags.addAll(TagUtil.extractTags(photoProvider.getPhotos()));
-        selectedTags = new TreeSet<>(allTags);
+
     }
 
     public void takePhoto(View view) {
@@ -393,6 +392,8 @@ public class MainActivity
                     }
                     photos.add(photo);
                 }
+                allTags.addAll(TagUtil.extractTags(photos));
+                selectedTags = new TreeSet<>(allTags);
                 showPhotoMarker(photos);
             }
 
