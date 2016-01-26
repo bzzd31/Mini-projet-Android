@@ -112,7 +112,7 @@ public class PhotoDialogFragment extends DialogFragment {
                 }
 
                 if (tagsConfirmed && authorConfirmed) {
-                    final Photo myPhoto = new Photo(myBitmap, etPseudo.getText().toString(), coordLat, coordLong, null);
+                    final Photo myPhoto = new Photo(myBitmap, etPseudo.getText().toString(), coordLat, coordLong, currentDate);
                     String[] myTags = etTags.getText().toString().split(",");
                     for (String tag : myTags) {
                         Tag myTag = new Tag(tag.replaceAll("\\s", ""));
