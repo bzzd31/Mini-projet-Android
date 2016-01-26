@@ -208,7 +208,7 @@ public class MainActivity
                         new Thread() {
                             public void run() {
                                 try {
-                                    //while (coordLat.equals(0.0d) && coordLong.equals(0.0d)) ;
+                                    while (coordLat.equals(0.0d) && coordLong.equals(0.0d)) ;
                                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                                     Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
                                     if (prev != null) {

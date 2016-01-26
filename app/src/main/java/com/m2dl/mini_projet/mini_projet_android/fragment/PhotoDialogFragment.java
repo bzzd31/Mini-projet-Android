@@ -1,5 +1,6 @@
 package com.m2dl.mini_projet.mini_projet_android.fragment;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -49,6 +50,7 @@ public class PhotoDialogFragment extends DialogFragment {
     private double coordLong;
     private Bitmap myBitmap;
     private String imageFilePath;
+    private static MainActivity mainActivity;
 
     public static PhotoDialogFragment newInstance(Bitmap myBitmap, double coordLat, double coordLong, String imageFilePath) {
         PhotoDialogFragment dialog = new PhotoDialogFragment();
@@ -66,6 +68,7 @@ public class PhotoDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.menu_photo_view, container, false);
         if (getArguments() != null) {
+            mainActivity = ((MainActivity) getActivity());
             myBitmap = getArguments().getParcelable("photo");
             ImageView bitmapDialog = (ImageView)v.findViewById(R.id.imageView);
             bitmapDialog.setImageBitmap(myBitmap);
@@ -123,12 +126,13 @@ public class PhotoDialogFragment extends DialogFragment {
                         @Override
                         public void success(com.m2dl.mini_projet.mini_projet_android.photos.model.Photo photo, Response response) {
                             myPhoto.setUrl(photo.getUrl());
-                            ((MainActivity) getActivity()).putInPhotoMarkers(myPhoto);
+                            mainActivity.putInPhotoMarkers(myPhoto);
                             getDialog().dismiss();
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
+
                             System.err.println("oups");
                         }
                     };
