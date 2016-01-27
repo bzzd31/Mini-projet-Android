@@ -95,9 +95,6 @@ public class MainActivity
     private String imageFilePath;
 
     private GoogleMap mMap;
-    private SupportMapFragment mapFragment;
-
-    private FragmentManager fm;
 
     private LocationManager locationManager = null;
     private Boolean isGPSOn = false;
@@ -152,9 +149,7 @@ public class MainActivity
             }
         });
 
-        fm = getFragmentManager();
-
-        mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
@@ -165,7 +160,7 @@ public class MainActivity
         selectedTags = new TreeSet<>();
     }
 
-    public void takePhoto(View view) {
+    private void takePhoto(View view) {
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
         File photo = new File(Environment.getExternalStorageDirectory(), "Pic.jpg");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
@@ -231,6 +226,7 @@ public class MainActivity
                                     DialogFragment newFragment = PhotoDialogFragment.newInstance(myBitmap, coordLat, coordLong, imageFilePath);
                                     newFragment.show(ft, "dialog");
                                 } catch (Exception e) {
+                                    Log.e(TAG, e.getMessage());
                                 }
                                 progDialog.dismiss();
                             }
@@ -405,6 +401,7 @@ public class MainActivity
                 try {
                     while(!loaded[0]);
                 } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
                 }
                 progDialog.dismiss();
             }

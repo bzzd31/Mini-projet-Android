@@ -19,8 +19,6 @@
  */
 package com.m2dl.mini_projet.mini_projet_android.data.photo;
 
-import android.graphics.Bitmap;
-
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 
 import java.util.ArrayList;

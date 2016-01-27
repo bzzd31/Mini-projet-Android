@@ -60,8 +60,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     protected void onPostExecute(Bitmap result) {
         //set image of your imageview
         pb.setVisibility(View.GONE);
-        BitmapUtil bitmapUtil = new BitmapUtil();
-        bmImage.setImageBitmap(bitmapUtil.resize(result));
+        bmImage.setImageBitmap(BitmapUtil.resize(result));
         //close
         //mDialog.dismiss();
     }

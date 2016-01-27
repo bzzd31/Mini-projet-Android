@@ -24,6 +24,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,7 +115,7 @@ public class PhotoDialogFragment extends DialogFragment {
         buttonConfirmer.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Date currentDate = new Date(System.currentTimeMillis());
-                Boolean authorConfirmed = false, tagsConfirmed = false;
+                Boolean authorConfirmed, tagsConfirmed;
                 if (!etPseudo.getText().toString().isEmpty()) {
                     authorConfirmed = true;
                 } else {
@@ -179,6 +180,7 @@ public class PhotoDialogFragment extends DialogFragment {
                             try {
                                 while(!uploaded[0]);
                             } catch (Exception e) {
+                                Log.e(MainActivity.TAG, e.getMessage());
                             }
                             progDialog.dismiss();
                         }

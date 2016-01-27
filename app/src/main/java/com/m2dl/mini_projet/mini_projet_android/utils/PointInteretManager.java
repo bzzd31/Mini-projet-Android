@@ -20,7 +20,6 @@
 package com.m2dl.mini_projet.mini_projet_android.utils;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v4.content.ContextCompat;
 
 import com.google.android.gms.maps.model.CircleOptions;
@@ -54,7 +53,7 @@ public class PointInteretManager {
         return mapPointInteret;
     }
 
-    public void addPoint(PointInteret pointInteret, LatLng... positions) {
+    private void addPoint(PointInteret pointInteret, LatLng... positions) {
         Object opt;
         if (positions.length == 1) {
             opt = new CircleOptions()

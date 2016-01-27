@@ -65,11 +65,10 @@ public class MarkerDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.marker_view, container, false);
         if (getArguments() != null) {
-            BitmapUtil bitmapUtil = new BitmapUtil();
             ImageView bitmapDialog = (ImageView) v.findViewById(R.id.imageView);
             ProgressBar progress = (ProgressBar)v.findViewById(R.id.loadingPanel);
             progress.setVisibility(View.VISIBLE);
-            bitmapUtil.loadBitmap(bitmapDialog, progress, getArguments().getString(ARG_URL));
+            BitmapUtil.loadBitmap(bitmapDialog, progress, getArguments().getString(ARG_URL));
             TextView pseudoTV = (TextView)v.findViewById(R.id.textViewPseudo);
             pseudoTV.setText(pseudoTV.getText()+getArguments().getString(ARG_AUTHOR));
             TextView dateTV = (TextView)v.findViewById(R.id.textViewDate);

@@ -30,6 +30,7 @@ import java.util.Map;
 public class CloudinaryHelper {
     public static Cloudinary cloudinary = new Cloudinary(Constants.CLOUDINARY_URL);
 
+    @SuppressWarnings("unchecked")
     public static String upload(InputStream inputStream) {
         try {
 
