@@ -17,7 +17,7 @@ public class ServiceGenerator {
     //check if data should be removed
 
     private static Gson gson = new GsonBuilder()
-            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss zzz")
             .create();
     private static RestAdapter.Builder builder = new RestAdapter.Builder()
             .setEndpoint(Constants.API_URL)
