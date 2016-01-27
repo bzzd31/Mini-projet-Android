@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
 
-import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
@@ -13,8 +12,6 @@ import retrofit.converter.GsonConverter;
  * Created by kelto on 21/01/16.
  */
 public class ServiceGenerator {
-
-    //check if data should be removed
 
     private static Gson gson = new GsonBuilder()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss zzz")
