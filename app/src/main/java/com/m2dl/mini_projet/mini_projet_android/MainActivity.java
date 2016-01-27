@@ -141,12 +141,9 @@ public class MainActivity
 
         pointInteretManager = new PointInteretManager(this);
 
-
         // Init tag list
         allTags = new TreeSet<>();
-        allTags.addAll(pointInteretManager.getPointInterets());
         selectedTags = new TreeSet<>();
-
     }
 
     public void takePhoto(View view) {
@@ -367,7 +364,6 @@ public class MainActivity
                     photos.add(photo);
                 }
                 allTags.clear();
-                allTags.addAll(pointInteretManager.getPointInterets());
                 allTags.addAll(TagUtil.extractTags(photos));
                 // TODO: remove temp fix
                 if (selectedTags.size() == 0)
