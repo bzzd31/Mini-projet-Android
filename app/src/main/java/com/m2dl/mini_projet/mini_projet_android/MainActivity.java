@@ -47,6 +47,7 @@ import com.m2dl.mini_projet.mini_projet_android.fragment.PhotoDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.fragment.TagSelectDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.photos.ServiceGenerator;
 import com.m2dl.mini_projet.mini_projet_android.photos.SimpleImageTag;
+import com.m2dl.mini_projet.mini_projet_android.photos.model.Image;
 import com.m2dl.mini_projet.mini_projet_android.utils.BitmapUtil;
 import com.m2dl.mini_projet.mini_projet_android.utils.PointInteretManager;
 import com.m2dl.mini_projet.mini_projet_android.utils.TagUtil;
@@ -351,14 +352,14 @@ public class MainActivity
         }
         final boolean[] loaded = {false};
         myPhotoMarkers.clear();
-        Callback<List<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo>> callback = new Callback<List<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo>>() {
+        Callback<List<Image>> callback = new Callback<List<Image>>() {
             @Override
-            public void success(List<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo> photoList, Response response) {
+            public void success(List<Image> images, Response response) {
                 List<Photo> photos = new ArrayList<>();
-                for (com.m2dl.mini_projet.mini_projet_android.photos.model.Photo p : photoList) {
-                    Photo photo = new Photo(null, p.author, p.coordLat, p.coordLong, p.date, p.getUrl());
-                    photo.setTag(p.tags);
-                    String[] myTags = p.tags.split(",");
+                for (Image p : images) {
+                    Photo photo = new Photo(null, p.getAuthor(), p.getCoordLat(), p.getCoordLong(), p.getDate(), p.url());
+                    photo.setTag(p.getTags());
+                    String[] myTags = p.getTags().split(",");
                     for (String tag : myTags) {
                         Tag myTag = new Tag(tag.replaceAll("\\s", ""));
                         photo.putTag(myTag);
@@ -382,7 +383,7 @@ public class MainActivity
         };
 
         SimpleImageTag imageTag = ServiceGenerator.createService(SimpleImageTag.class);
-        imageTag.getAsyncPhotos(callback);
+        imageTag.getImages(callback);
         final ProgressDialog progDialog = ProgressDialog.show(this, "Récupération des points d'intérêt en cours...", "Veuillez patienter", true);
         new Thread() {
             public void run() {

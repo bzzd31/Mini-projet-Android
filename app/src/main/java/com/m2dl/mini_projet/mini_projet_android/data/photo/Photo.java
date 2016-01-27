@@ -79,7 +79,7 @@ public class Photo {
 
     @Override
     public String toString() {
-        return "Photo{" +
+        return "Image{" +
                 "coordLat=" + coordLat +
                 ", coordLong=" + coordLong +
                 ", author='" + author + '\'' +

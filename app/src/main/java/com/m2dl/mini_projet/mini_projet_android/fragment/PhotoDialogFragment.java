@@ -18,6 +18,7 @@ import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 import com.m2dl.mini_projet.mini_projet_android.photos.ServiceGenerator;
 import com.m2dl.mini_projet.mini_projet_android.photos.SimpleImageTag;
+import com.m2dl.mini_projet.mini_projet_android.photos.model.Image;
 import com.m2dl.mini_projet.mini_projet_android.photos.storage.CloudinaryHelper;
 
 import java.io.BufferedOutputStream;
@@ -116,11 +117,11 @@ public class PhotoDialogFragment extends DialogFragment {
 
                     final boolean[] uploaded = {false};
 
-                    final com.m2dl.mini_projet.mini_projet_android.photos.model.Photo p = factory(myPhoto, tag, myPhoto.getMyBitmap());
-                    final Callback<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo> callback = new Callback<com.m2dl.mini_projet.mini_projet_android.photos.model.Photo>() {
+                    final Image p = factory(myPhoto, tag, myPhoto.getMyBitmap());
+                    final Callback<Image> callback = new Callback<Image>() {
                         @Override
-                        public void success(com.m2dl.mini_projet.mini_projet_android.photos.model.Photo photo, Response response) {
-                            myPhoto.setUrl(photo.getUrl());
+                        public void success(Image photo, Response response) {
+                            myPhoto.setUrl(photo.url());
                             mainActivity.putInPhotoMarkers(myPhoto);
                             uploaded[0] = true;
                             getDialog().dismiss();
@@ -139,8 +140,8 @@ public class PhotoDialogFragment extends DialogFragment {
                         @Override
                         protected String doInBackground(InputStream... params) {
                             String id = CloudinaryHelper.upload(params[0]);
-                            p.id = id;
-                            simpleImageTag.postAsyncPhoto(p,callback);
+                            p.setAuthor(id);
+                            simpleImageTag.postImage(p, callback);
                             return id;
                         }
                     };
@@ -165,35 +166,35 @@ public class PhotoDialogFragment extends DialogFragment {
         return v;
     }
 
-    public com.m2dl.mini_projet.mini_projet_android.photos.model.Photo factory(Photo mphoto, String tags, Bitmap photo) {
+    public Image factory(Photo mphoto, String tags, Bitmap photo) {
         File file = new File(imageFilePath);
         OutputStream os = null;
         try {
             os = new BufferedOutputStream(new FileOutputStream(file));
             photo.compress(Bitmap.CompressFormat.JPEG, 100, os);
-            os.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        //photo should be a File or an Inputstream. Can transform, but not necessary
-        com.m2dl.mini_projet.mini_projet_android.photos.model.Photo p;
+        Image p;
         InputStream is = null;
         try {
             is = new FileInputStream(file);
-
-
-            p = new com.m2dl.mini_projet.mini_projet_android.photos.model.Photo();
-            p.author = mphoto.getAuthor();
-            p.coordLat = mphoto.getCoordLat();
-            p.coordLong = mphoto.getCoordLong();
-            p.tags = tags;
+            p = new Image();
+            p.setAuthor(mphoto.getAuthor());
+            p.setCoordLat(mphoto.getCoordLat());
+            p.setCoordLong(mphoto.getCoordLong());
+            p.setTags(tags);
         } catch (IOException e) {
             p = null;
             e.printStackTrace();
         } finally {
-            /*
             if(is != null) {
                 try {
                     is.close();
@@ -201,7 +202,6 @@ public class PhotoDialogFragment extends DialogFragment {
                     e.printStackTrace();
                 }
             }
-            */
         }
         return p;
     }

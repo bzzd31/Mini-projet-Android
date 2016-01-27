@@ -1,6 +1,6 @@
 package com.m2dl.mini_projet.mini_projet_android.photos;
 
-import com.m2dl.mini_projet.mini_projet_android.photos.model.Photo;
+import com.m2dl.mini_projet.mini_projet_android.photos.model.Image;
 
 import java.util.List;
 
@@ -15,12 +15,12 @@ import retrofit.http.POST;
 public interface SimpleImageTag {
 
     @GET("/images")
-    void getAsyncPhotos(Callback<List<Photo>> callback);
+    void getImages(Callback<List<Image>> callback);
 
     @POST("/images")
-    void postAsyncPhoto(
-            @Body Photo photo,
-            Callback<Photo> callback
+    void postImage(
+            @Body Image image,
+            Callback<Image> callback
     );
 
 }
