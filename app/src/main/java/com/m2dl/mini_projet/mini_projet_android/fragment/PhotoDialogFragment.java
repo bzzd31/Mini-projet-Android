@@ -140,7 +140,7 @@ public class PhotoDialogFragment extends DialogFragment {
                         @Override
                         protected String doInBackground(InputStream... params) {
                             String id = CloudinaryHelper.upload(params[0]);
-                            p.setAuthor(id);
+                            p.setId(id);
                             simpleImageTag.postImage(p, callback);
                             return id;
                         }
