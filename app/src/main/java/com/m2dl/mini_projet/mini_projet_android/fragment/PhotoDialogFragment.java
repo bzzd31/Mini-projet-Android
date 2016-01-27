@@ -1,30 +1,24 @@
 package com.m2dl.mini_projet.mini_projet_android.fragment;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.m2dl.mini_projet.mini_projet_android.MainActivity;
-import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
 import com.m2dl.mini_projet.mini_projet_android.R;
+import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
 import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 import com.m2dl.mini_projet.mini_projet_android.photos.ServiceGenerator;
 import com.m2dl.mini_projet.mini_projet_android.photos.SimpleImageTag;
 import com.m2dl.mini_projet.mini_projet_android.photos.storage.CloudinaryHelper;
-import com.m2dl.mini_projet.mini_projet_android.provider.IPhotoProvider;
-import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProvider;
-import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProviderMock;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -76,8 +70,6 @@ public class PhotoDialogFragment extends DialogFragment {
 
             coordLat = getArguments().getDouble("coordLat");
             coordLong = getArguments().getDouble("coordLong");
-            /*TextView coord = (TextView)v.findViewById(R.id.textViewCoord);
-            coord.setText("Latitude: " + coordLat + "  Longitude: " + coordLong);*/
 
             imageFilePath = getArguments().getString("imageFilePath");
         }

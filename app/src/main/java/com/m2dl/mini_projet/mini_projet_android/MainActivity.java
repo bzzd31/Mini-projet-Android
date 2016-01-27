@@ -1,23 +1,21 @@
 package com.m2dl.mini_projet.mini_projet_android;
 
 import android.Manifest;
-import android.app.ProgressDialog;
-import android.media.ExifInterface;
-import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
+import android.app.Activity;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.graphics.Bitmap;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,6 +23,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -42,17 +41,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.m2dl.mini_projet.mini_projet_android.data.photo.Photo;
+import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 import com.m2dl.mini_projet.mini_projet_android.fragment.MarkerDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.fragment.PhotoDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.fragment.TagSelectDialogFragment;
 import com.m2dl.mini_projet.mini_projet_android.photos.ServiceGenerator;
 import com.m2dl.mini_projet.mini_projet_android.photos.SimpleImageTag;
-
-import com.m2dl.mini_projet.mini_projet_android.provider.IPhotoProvider;
-import com.m2dl.mini_projet.mini_projet_android.provider.PhotoProvider;
 import com.m2dl.mini_projet.mini_projet_android.utils.BitmapUtil;
 import com.m2dl.mini_projet.mini_projet_android.utils.PointInteretManager;
-import com.m2dl.mini_projet.mini_projet_android.data.tag.Tag;
 import com.m2dl.mini_projet.mini_projet_android.utils.TagUtil;
 
 import java.io.File;
@@ -91,7 +87,6 @@ public class MainActivity
     private Set<Tag> allTags;
     private Set<Tag> selectedTags;
 
-    private IPhotoProvider photoProvider;
     private Map<Marker, Photo> myPhotoMarkers;
 
     @Override
@@ -145,8 +140,6 @@ public class MainActivity
 
         pointInteretManager = new PointInteretManager(this);
 
-        // Init provider
-        photoProvider = new PhotoProvider();
 
         // Init tag list
         allTags = new TreeSet<>();
@@ -335,16 +328,6 @@ public class MainActivity
             }
         }
     }
-
-    /*private void showPhotoMarker() {
-        // Place all photos on map
-        for (Photo photo : photoProvider.getPhotos()) {
-            // Check if photo contains tag in selectedTags
-            if (TagUtil.containsOneOf(selectedTags, photo.getTags())) {
-                putInPhotoMarkers(photo);
-            }
-        }
-    }*/
 
     private void showPhotoMarker(List<Photo> photos) {
         // Place all photos on map
