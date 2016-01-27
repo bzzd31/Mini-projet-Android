@@ -1,6 +1,6 @@
 /* This file is part of UPS-Caring.
 
-    Copyright 2016 Charles Falloud <charles.fallourd@master-developpement-logiciel.fr>
+    Copyright 2016 Charles Fallourd <charles.fallourd@master-developpement-logiciel.fr>
     Copyright 2016 Lucas Bled <lucas.bled@master-developpement-logiciel.fr>
     Copyright 2016 Théo Vaucher <theo.vaucher@master-developpement-logiciel.fr>
 
