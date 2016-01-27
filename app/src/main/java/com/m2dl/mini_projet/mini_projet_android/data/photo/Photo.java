@@ -36,24 +36,18 @@ public class Photo {
     private List<Tag> tags;
     private String tag;
     private String url;
-    private Bitmap myBitmap;
 
-    public Photo(Bitmap myBitmap, String author, double coordLat, double coordLong, Date date) {
-        this(myBitmap, author, coordLat, coordLong, date, null);
+    public Photo(String author, double coordLat, double coordLong, Date date) {
+        this(author, coordLat, coordLong, date, null);
     }
 
-    public Photo(Bitmap myBitmap, String author, double coordLat, double coordLong, Date date, String url) {
-        this.myBitmap = myBitmap;
+    public Photo(String author, double coordLat, double coordLong, Date date, String url) {
         this.author = author;
         this.coordLat = coordLat;
         this.coordLong = coordLong;
         this.date = date;
         this.url = url;
         this.tags = new ArrayList<>();
-    }
-
-    public Bitmap getMyBitmap() {
-        return myBitmap;
     }
 
     public void putTag(Tag tag) {

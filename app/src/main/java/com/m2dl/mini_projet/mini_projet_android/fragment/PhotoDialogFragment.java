@@ -57,6 +57,11 @@ import retrofit.client.Response;
 
 public class PhotoDialogFragment extends DialogFragment {
 
+    private static final String ARG_PHOTO = "photo";
+    private static final String ARG_COORD_LAT = "coordLat";
+    private static final String ARG_COORD_LONG = "coordLong";
+    private static final String ARG_FILE_PATH = "imageFilePath";
+
     private EditText etPseudo, etTags;
 
     private ArrayList<String> tags;
@@ -69,10 +74,10 @@ public class PhotoDialogFragment extends DialogFragment {
     public static PhotoDialogFragment newInstance(Bitmap myBitmap, double coordLat, double coordLong, String imageFilePath) {
         PhotoDialogFragment dialog = new PhotoDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable("photo", myBitmap);
-        args.putDouble("coordLat", coordLat);
-        args.putDouble("coordLong", coordLong);
-        args.putString("imageFilePath", imageFilePath);
+        args.putParcelable(ARG_PHOTO, myBitmap);
+        args.putDouble(ARG_COORD_LAT, coordLat);
+        args.putDouble(ARG_COORD_LONG, coordLong);
+        args.putString(ARG_FILE_PATH, imageFilePath);
         dialog.setArguments(args);
         return dialog;
     }
@@ -83,14 +88,14 @@ public class PhotoDialogFragment extends DialogFragment {
         View v = inflater.inflate(R.layout.menu_photo_view, container, false);
         if (getArguments() != null) {
             mainActivity = ((MainActivity) getActivity());
-            myBitmap = getArguments().getParcelable("photo");
+            myBitmap = getArguments().getParcelable(ARG_PHOTO);
             ImageView bitmapDialog = (ImageView)v.findViewById(R.id.imageView);
             bitmapDialog.setImageBitmap(myBitmap);
 
-            coordLat = getArguments().getDouble("coordLat");
-            coordLong = getArguments().getDouble("coordLong");
+            coordLat = getArguments().getDouble(ARG_COORD_LAT);
+            coordLong = getArguments().getDouble(ARG_COORD_LONG);
 
-            imageFilePath = getArguments().getString("imageFilePath");
+            imageFilePath = getArguments().getString(ARG_FILE_PATH);
         }
 
         getDialog().setTitle("Uploader votre photo");
@@ -124,7 +129,7 @@ public class PhotoDialogFragment extends DialogFragment {
                 }
 
                 if (tagsConfirmed && authorConfirmed) {
-                    final Photo myPhoto = new Photo(myBitmap, etPseudo.getText().toString(), coordLat, coordLong, currentDate);
+                    final Photo myPhoto = new Photo(etPseudo.getText().toString(), coordLat, coordLong, currentDate);
                     String[] myTags = etTags.getText().toString().split(",");
                     for (String tag : myTags) {
                         Tag myTag = new Tag(tag.replaceAll("\\s", ""));
@@ -135,7 +140,7 @@ public class PhotoDialogFragment extends DialogFragment {
 
                     final boolean[] uploaded = {false};
 
-                    final Image p = factory(myPhoto, tag, myPhoto.getMyBitmap());
+                    final Image p = factory(myPhoto, tag, myBitmap);
                     final Callback<Image> callback = new Callback<Image>() {
                         @Override
                         public void success(Image photo, Response response) {

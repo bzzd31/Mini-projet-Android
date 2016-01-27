@@ -373,7 +373,7 @@ public class MainActivity
             public void success(List<Image> images, Response response) {
                 List<Photo> photos = new ArrayList<>();
                 for (Image p : images) {
-                    Photo photo = new Photo(null, p.getAuthor(), p.getCoordLat(), p.getCoordLong(), p.getDate(), p.url());
+                    Photo photo = new Photo(p.getAuthor(), p.getCoordLat(), p.getCoordLong(), p.getDate(), p.url());
                     photo.setTag(p.getTags());
                     String[] myTags = p.getTags().split(",");
                     for (String tag : myTags) {
@@ -384,7 +384,7 @@ public class MainActivity
                 }
                 allTags.clear();
                 allTags.addAll(TagUtil.extractTags(photos));
-                // TODO: remove temp fix
+
                 if (selectedTags.size() == 0)
                     selectedTags.addAll(allTags);
                 showPhotoMarker(photos);

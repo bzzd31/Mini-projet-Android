@@ -31,14 +31,4 @@ public class PointInteret extends Tag {
     public int getColor() {
         return color;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 }

@@ -38,18 +38,24 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 
 public class MarkerDialogFragment extends DialogFragment {
+
+    private static final String ARG_AUTHOR = "author";
+    private static final String ARG_DATE = "date";
+    private static final String ARG_TAGS = "tags";
+    private static final String ARG_URL = "url";
+
     public static MarkerDialogFragment newInstance(Photo myPhoto) {
         MarkerDialogFragment dialogMarker = new MarkerDialogFragment();
         Bundle args = new Bundle();
-        args.putString("author", myPhoto.getAuthor());
+        args.putString(ARG_AUTHOR, myPhoto.getAuthor());
         DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
-        args.putString("date", dateFormat.format(myPhoto.getDate()));
+        args.putString(ARG_DATE, dateFormat.format(myPhoto.getDate()));
         ArrayList<String> myArrayList = new ArrayList<>();
         for (Tag tag: myPhoto.getTags()) {
             myArrayList.add(tag.getNom());
         }
-        args.putStringArrayList("tags", myArrayList);
-        args.putString("url", myPhoto.getUrl());
+        args.putStringArrayList(ARG_TAGS, myArrayList);
+        args.putString(ARG_URL, myPhoto.getUrl());
         dialogMarker.setArguments(args);
         return dialogMarker;
     }
@@ -63,15 +69,15 @@ public class MarkerDialogFragment extends DialogFragment {
             ImageView bitmapDialog = (ImageView) v.findViewById(R.id.imageView);
             ProgressBar progress = (ProgressBar)v.findViewById(R.id.loadingPanel);
             progress.setVisibility(View.VISIBLE);
-            bitmapUtil.loadBitmap(bitmapDialog, progress, getArguments().getString("url"));
+            bitmapUtil.loadBitmap(bitmapDialog, progress, getArguments().getString(ARG_URL));
             TextView pseudoTV = (TextView)v.findViewById(R.id.textViewPseudo);
-            pseudoTV.setText(pseudoTV.getText()+getArguments().getString("author"));
+            pseudoTV.setText(pseudoTV.getText()+getArguments().getString(ARG_AUTHOR));
             TextView dateTV = (TextView)v.findViewById(R.id.textViewDate);
 
-            dateTV.setText(dateTV.getText()+dateFormatting(getArguments().getString("date")));
+            dateTV.setText(dateTV.getText()+dateFormatting(getArguments().getString(ARG_DATE)));
             TextView tagsTV = (TextView)v.findViewById(R.id.textViewTags);
             String tags = "";
-            for (String str: getArguments().getStringArrayList("tags")) {
+            for (String str: getArguments().getStringArrayList(ARG_TAGS)) {
                 tags= tags+" "+str;
             }
             tagsTV.setText(tagsTV.getText()+tags);
