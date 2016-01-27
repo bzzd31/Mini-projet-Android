@@ -130,7 +130,7 @@ public class PhotoDialogFragment extends DialogFragment {
                         @Override
                         public void failure(RetrofitError error) {
 
-                            System.err.println("oups");
+                            System.err.println("Could not post photo");
                         }
                     };
 
